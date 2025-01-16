@@ -45,6 +45,7 @@ logs:
 db-up:
 	cd webapi
 	@docker-compose -f docker-compose.db.yml up -d
+	
 db-down:
 	cd webapi
 	@docker-compose -f docker-compose.db.yml down
