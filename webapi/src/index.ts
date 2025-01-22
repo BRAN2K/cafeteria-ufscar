@@ -1,26 +1,27 @@
 import express from "express";
-import { PORT, NODE_ENV } from "./config/env";
-import orderRoutes from "./routes/order.routes";
+import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
+
+import { PORT, NODE_ENV } from "./config/env";
 import { swaggerSpecs } from "./config/swagger";
 import { errorHandler } from "./middlewares/errorHandler";
-import morgan from "morgan";
+
+import orderRoutes from "./routes/order.routes";
+import employeeRoutes from "./routes/employee.routes";
 
 const app = express();
 
 app.use(express.json());
 app.use(morgan(NODE_ENV === "production" ? "combined" : "dev"));
 
-// Rota de teste
 app.get("/", (req, res) => {
   res.send("Hello World! API is working!");
 });
 
-// Rotas do Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
-// Rotas de Pedidos
 app.use("/orders", orderRoutes);
+app.use("/employees", employeeRoutes);
 
 app.use(errorHandler);
 

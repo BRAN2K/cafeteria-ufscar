@@ -25,6 +25,12 @@ dev-front:
 dev-back:
 	cd webapi && npm run dev
 
+back:
+	cd webapi && npx repomix
+
+front:
+	cd presentation && npx repomix
+
 # Sobe todos os serviços
 up:
 	@docker-compose up -d

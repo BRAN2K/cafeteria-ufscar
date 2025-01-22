@@ -2,12 +2,46 @@ import { Router } from "express";
 import { OrderController } from "../controllers/order.controller";
 import {
   validateCreateOrder,
-  validateIdParam,
   validateUpdateOrder,
 } from "../validations/order.validations";
+import {
+  validatePagination,
+  validateIdParam,
+} from "../validations/shared.validations";
 
 const router = Router();
 const orderController = new OrderController();
+
+/**
+ * @openapi
+ * /orders:
+ *   post:
+ *     summary: Cria um novo pedido
+ *     tags:
+ *       - Orders
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               table_id:
+ *                 type: number
+ *               employee_id:
+ *                 type: number
+ *             example:
+ *               table_id: 1
+ *               employee_id: 2
+ *     responses:
+ *       201:
+ *         description: Pedido criado com sucesso
+ *       400:
+ *         description: Erro de validação
+ *       500:
+ *         description: Erro interno do servidor
+ */
+router.post("/", validateCreateOrder, orderController.createOrder);
 
 /**
  * @openapi
@@ -61,38 +95,7 @@ const orderController = new OrderController();
  *       500:
  *         description: Erro interno do servidor
  */
-router.get("/", orderController.getAllOrders);
-
-/**
- * @openapi
- * /orders:
- *   post:
- *     summary: Cria um novo pedido
- *     tags:
- *       - Orders
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               table_id:
- *                 type: number
- *               employee_id:
- *                 type: number
- *             example:
- *               table_id: 1
- *               employee_id: 2
- *     responses:
- *       201:
- *         description: Pedido criado com sucesso
- *       400:
- *         description: Erro de validação
- *       500:
- *         description: Erro interno do servidor
- */
-router.post("/", validateCreateOrder, orderController.createOrder);
+router.get("/", validatePagination, orderController.getAllOrders);
 
 /**
  * @openapi
