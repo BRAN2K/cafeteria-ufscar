@@ -8,6 +8,7 @@ import { errorHandler } from "./middlewares/errorHandler";
 
 import orderRoutes from "./routes/order.routes";
 import employeeRoutes from "./routes/employee.routes";
+import customerRoutes from "./routes/customer.routes";
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 app.use("/orders", orderRoutes);
 app.use("/employees", employeeRoutes);
+app.use("/customers", customerRoutes);
 
 app.use(errorHandler);
 
