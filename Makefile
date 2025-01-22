@@ -23,8 +23,7 @@ dev-front:
 	npm run dev
 
 dev-back:
-	cd webapi
-	npm run dev
+	cd webapi && npm run dev
 
 # Sobe todos os serviços
 up:
@@ -43,17 +42,13 @@ logs:
 	@docker-compose logs -f
 
 db-up:
-	cd webapi
-	@docker-compose -f docker-compose.db.yml up -d
+	@docker-compose -f webapi/docker-compose.db.yml up -d
 	
 db-down:
-	cd webapi
-	@docker-compose -f docker-compose.db.yml down
+	@docker-compose -f webapi/docker-compose.db.yml down
 
 migrate-latest:
-	cd webapi
-	npm run migrate:latest
+	cd webapi && npm run migrate:latest
 
 migrate-rollback:
-	cd webapi
-	npm run migrate:rollback
+	cd webapi && npm run migrate:rollback
