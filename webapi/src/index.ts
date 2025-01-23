@@ -10,6 +10,7 @@ import orderRoutes from "./routes/order.routes";
 import employeeRoutes from "./routes/employee.routes";
 import customerRoutes from "./routes/customer.routes";
 import tableRoutes from "./routes/table.routes";
+import productRoutes from "./routes/product.routes";
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use("/orders", orderRoutes);
 app.use("/employees", employeeRoutes);
 app.use("/customers", customerRoutes);
 app.use("/tables", tableRoutes);
+app.use("/products", productRoutes);
 
 app.use(errorHandler);
 
