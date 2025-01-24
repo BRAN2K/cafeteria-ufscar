@@ -73,6 +73,21 @@ router.post("/", validateCreateOrderItem, (req, res, next) =>
  *     responses:
  *       200:
  *         description: Lista de itens de pedido paginada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 page:
+ *                   type: integer
+ *                 limit:
+ *                   type: integer
+ *                 total:
+ *                   type: integer
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/OrderItem'
  *       400:
  *         description: Parâmetros inválidos
  *       500:
@@ -99,6 +114,10 @@ router.get("/", validatePagination, (req, res, next) =>
  *     responses:
  *       200:
  *         description: Item de pedido encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/OrderItem'
  *       400:
  *         description: Parâmetro inválido (id não numérico)
  *       404:

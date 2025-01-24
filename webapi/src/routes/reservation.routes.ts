@@ -105,6 +105,21 @@ router.post("/", validateCreateReservation, (req, res, next) =>
  *     responses:
  *       200:
  *         description: Lista de reservas paginada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 page:
+ *                   type: integer
+ *                 limit:
+ *                   type: integer
+ *                 total:
+ *                   type: integer
+ *                 records:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Reservation'
  *       400:
  *         description: Parâmetros inválidos
  *       500:
@@ -135,6 +150,15 @@ router.get("/", validatePagination, (req, res, next) =>
  *     responses:
  *       200:
  *         description: Lista de mesas livres no intervalo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 available_tables:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Table'
  *       400:
  *         description: Parâmetros inválidos (sem start ou end)
  *       500:
@@ -143,6 +167,7 @@ router.get("/", validatePagination, (req, res, next) =>
 router.get("/check-availability", validateCheckAvailability, (req, res, next) =>
   reservationController.checkAvailability(req, res, next)
 );
+
 /**
  * @openapi
  * /reservations/{id}:
@@ -160,6 +185,10 @@ router.get("/check-availability", validateCheckAvailability, (req, res, next) =>
  *     responses:
  *       200:
  *         description: Reserva encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Reservation'
  *       400:
  *         description: Parâmetro inválido
  *       404:
