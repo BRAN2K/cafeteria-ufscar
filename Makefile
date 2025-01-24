@@ -16,7 +16,7 @@ export NODE_ENV
 export API_PORT
 export FRONTEND_PORT
 
-.PHONY: dev-front dev-back up down build logs db-up db-down migrate-latest migrate-rollback 
+.PHONY: dev-front dev-back up down build logs db-up db-down migrate-latest migrate-rollback migrate-create
 
 dev-front:
 	cd presentation
@@ -58,3 +58,6 @@ migrate-latest:
 
 migrate-rollback:
 	cd webapi && npm run migrate:rollback
+
+migrate-create:
+	cd webapi && npx knex migrate:make $(name) -x ts

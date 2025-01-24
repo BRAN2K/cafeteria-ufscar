@@ -6,9 +6,8 @@ export async function up(knex: Knex): Promise<void> {
     table.increments("id").primary();
     table.string("name", 100).notNullable();
     table.string("email", 100).notNullable().unique();
-    // Possíveis valores: 'admin', 'attendant', 'manager', 'other'
-    table.string("role", 50).notNullable().defaultTo("attendant");
-    table.timestamp("created_at").defaultTo(knex.fn.now());
+    table.string("role", 50).notNullable().defaultTo("attendant"); // 'admin', 'attendant', 'manager', 'other'
+    table.datetime("created_at").defaultTo(knex.fn.now());
   });
 
   // Tabela de clientes
@@ -17,7 +16,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string("name", 100).notNullable();
     table.string("email", 100).notNullable().unique();
     table.string("phone", 20).defaultTo("");
-    table.timestamp("created_at").defaultTo(knex.fn.now());
+    table.datetime("created_at").defaultTo(knex.fn.now());
   });
 
   // Tabela de mesas
@@ -25,9 +24,8 @@ export async function up(knex: Knex): Promise<void> {
     table.increments("id").primary();
     table.integer("table_number").notNullable().unique();
     table.integer("capacity").notNullable().defaultTo(4);
-    // Possíveis valores: 'available', 'reserved', 'occupied'
-    table.string("status", 50).notNullable().defaultTo("available");
-    table.timestamp("created_at").defaultTo(knex.fn.now());
+    table.string("status", 50).notNullable().defaultTo("available"); // 'available', 'reserved', 'occupied'
+    table.datetime("created_at").defaultTo(knex.fn.now());
   });
 
   // Tabela de reservas
@@ -35,8 +33,8 @@ export async function up(knex: Knex): Promise<void> {
     table.increments("id").primary();
     table.integer("table_id").unsigned().notNullable();
     table.integer("customer_id").unsigned().notNullable();
-    table.timestamp("reservation_time").notNullable();
-    table.timestamp("created_at").defaultTo(knex.fn.now());
+    table.datetime("reservation_time").notNullable();
+    table.datetime("created_at").defaultTo(knex.fn.now());
 
     table
       .foreign("table_id")
@@ -57,7 +55,7 @@ export async function up(knex: Knex): Promise<void> {
     table.text("description").defaultTo("");
     table.decimal("price", 10, 2).notNullable().defaultTo(0.0);
     table.integer("stock_quantity").notNullable().defaultTo(0);
-    table.timestamp("created_at").defaultTo(knex.fn.now());
+    table.datetime("created_at").defaultTo(knex.fn.now());
   });
 
   // Tabela de pedidos
@@ -65,9 +63,8 @@ export async function up(knex: Knex): Promise<void> {
     table.increments("id").primary();
     table.integer("table_id").unsigned().notNullable();
     table.integer("employee_id").unsigned().notNullable();
-    // Possíveis valores: 'pending', 'in_preparation', 'delivered', 'canceled'
-    table.string("status", 50).notNullable().defaultTo("pending");
-    table.timestamp("created_at").defaultTo(knex.fn.now());
+    table.string("status", 50).notNullable().defaultTo("pending"); // 'pending', 'in_preparation', 'delivered', 'canceled'
+    table.datetime("created_at").defaultTo(knex.fn.now());
 
     table
       .foreign("table_id")
@@ -88,7 +85,7 @@ export async function up(knex: Knex): Promise<void> {
     table.integer("product_id").unsigned().notNullable();
     table.integer("quantity").notNullable().defaultTo(1);
     table.decimal("price_at_order_time", 10, 2).notNullable().defaultTo(0.0);
-    table.timestamp("created_at").defaultTo(knex.fn.now());
+    table.datetime("created_at").defaultTo(knex.fn.now());
 
     table
       .foreign("order_id")

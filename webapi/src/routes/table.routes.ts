@@ -71,7 +71,7 @@ router.post("/", validateCreateTable, tableController.createTable);
  *         name: search
  *         schema:
  *           type: string
- *         description: Filtro no campo "status" (ex.: available, reserved, occupied)
+ *         description: Filtro no campo "status" (available, reserved, occupied)
  *     responses:
  *       200:
  *         description: Lista de mesas paginada
