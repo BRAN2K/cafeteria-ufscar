@@ -48,7 +48,9 @@ const employeeController = new EmployeeController();
  *       500:
  *         description: Erro interno do servidor
  */
-router.post("/", validateCreateEmployee, employeeController.createEmployee);
+router.post("/", validateCreateEmployee, (req, res, next) =>
+  employeeController.createEmployee(req, res, next)
+);
 
 /**
  * @openapi
@@ -94,7 +96,9 @@ router.post("/", validateCreateEmployee, employeeController.createEmployee);
  *       500:
  *         description: Erro interno
  */
-router.get("/", validatePagination, employeeController.getAllEmployees);
+router.get("/", validatePagination, (req, res, next) =>
+  employeeController.getAllEmployees(req, res, next)
+);
 
 /**
  * @openapi
@@ -120,7 +124,9 @@ router.get("/", validatePagination, employeeController.getAllEmployees);
  *       500:
  *         description: Erro interno do servidor
  */
-router.get("/:id", validateIdParam, employeeController.getEmployeeById);
+router.get("/:id", validateIdParam, (req, res, next) =>
+  employeeController.getEmployeeById(req, res, next)
+);
 
 /**
  * @openapi
@@ -163,11 +169,8 @@ router.get("/:id", validateIdParam, employeeController.getEmployeeById);
  *       500:
  *         description: Erro interno do servidor
  */
-router.put(
-  "/:id",
-  validateIdParam,
-  validateUpdateEmployee,
-  employeeController.updateEmployee
+router.put("/:id", validateIdParam, validateUpdateEmployee, (req, res, next) =>
+  employeeController.updateEmployee(req, res, next)
 );
 
 /**
@@ -194,6 +197,8 @@ router.put(
  *       500:
  *         description: Erro interno do servidor
  */
-router.delete("/:id", validateIdParam, employeeController.deleteEmployee);
+router.delete("/:id", validateIdParam, (req, res, next) =>
+  employeeController.deleteEmployee(req, res, next)
+);
 
 export default router;

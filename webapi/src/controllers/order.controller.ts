@@ -3,45 +3,39 @@ import createError from "http-errors";
 import db from "../database";
 
 export class OrderController {
-  /**
-   * Criação do pedido com itens e atualização de estoque.
-   * Observação: se qualquer item falhar, lançamos erro.
-   */
   public async createOrder(req: Request, res: Response, next: NextFunction) {
     const { table_id, employee_id, items } = req.body;
 
-    // Usamos transaction para garantir rollback caso algo falhe
     const trx = await db.transaction();
     try {
-      // 1) Cria o pedido em "orders"
       const [orderId] = await trx("orders").insert({ table_id, employee_id });
-      // 2) Para cada item, cria em "order_items" e atualiza estoque do produto
+
       for (const item of items) {
         const { product_id, quantity } = item;
-        // Verifica se o produto existe
+
         const product = await trx("products").where({ id: product_id }).first();
         if (!product) {
           throw createError.NotFound(`Product not found: ID ${product_id}`);
         }
-        // Verifica se há estoque suficiente
+
         if (product.stock_quantity < quantity) {
           throw createError.BadRequest(
             `Not enough stock for product ID ${product_id}`
           );
         }
-        // Cria item do pedido
+
         await trx("order_items").insert({
           order_id: orderId,
           product_id,
           quantity,
           price_at_order_time: product.price,
         });
-        // Atualiza estoque
+
         await trx("products")
           .where({ id: product_id })
           .decrement("stock_quantity", quantity);
       }
-      // Conclui transação
+
       await trx.commit();
 
       res.status(201).json({ message: "Order created", orderId });
@@ -51,9 +45,6 @@ export class OrderController {
     }
   }
 
-  /**
-   * Lista paginada de pedidos, cada pedido com seus itens e info completa do produto.
-   */
   public async getAllOrders(req: Request, res: Response, next: NextFunction) {
     try {
       const {
@@ -84,7 +75,6 @@ export class OrderController {
 
       const orders = await baseQuery.select("*").limit(limit).offset(offset);
 
-      // Para cada pedido, busca itens junto com infos do produto
       for (const order of orders) {
         const orderItems = await db("order_items")
           .select(
@@ -94,13 +84,12 @@ export class OrderController {
             "products.id as product_id",
             "products.name",
             "products.description",
-            "products.price", // Preço atual do produto (pode estar diferente de price_at_order_time)
+            "products.price",
             "products.stock_quantity"
           )
           .join("products", "order_items.product_id", "products.id")
           .where("order_items.order_id", order.id);
 
-        // Monta array de itens com "product" completo
         order.items = orderItems.map((oi: any) => ({
           id: oi.order_item_id,
           quantity: oi.quantity,
@@ -126,9 +115,6 @@ export class OrderController {
     }
   }
 
-  /**
-   * Retorna um pedido específico com detalhes dos itens.
-   */
   public async getOrderById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
@@ -171,10 +157,6 @@ export class OrderController {
     }
   }
 
-  /**
-   * Atualiza apenas dados do pedido (sem alterar itens).
-   * Não modifiquei — conforme solicitado.
-   */
   public async updateOrder(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
@@ -191,9 +173,6 @@ export class OrderController {
     }
   }
 
-  /**
-   * Remove um pedido.
-   */
   public async deleteOrder(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;

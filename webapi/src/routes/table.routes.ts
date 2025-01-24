@@ -47,7 +47,9 @@ const tableController = new TableController();
  *       500:
  *         description: Erro interno do servidor
  */
-router.post("/", validateCreateTable, tableController.createTable);
+router.post("/", validateCreateTable, (req, res, next) =>
+  tableController.createTable(req, res, next)
+);
 
 /**
  * @openapi
@@ -96,7 +98,9 @@ router.post("/", validateCreateTable, tableController.createTable);
  *       500:
  *         description: Erro interno
  */
-router.get("/", validatePagination, tableController.getAllTables);
+router.get("/", validatePagination, (req, res, next) =>
+  tableController.getAllTables(req, res, next)
+);
 
 /**
  * @openapi
@@ -122,7 +126,9 @@ router.get("/", validatePagination, tableController.getAllTables);
  *       500:
  *         description: Erro interno
  */
-router.get("/:id", validateIdParam, tableController.getTableById);
+router.get("/:id", validateIdParam, (req, res, next) =>
+  tableController.getTableById(req, res, next)
+);
 
 /**
  * @openapi
@@ -165,11 +171,8 @@ router.get("/:id", validateIdParam, tableController.getTableById);
  *       500:
  *         description: Erro interno
  */
-router.put(
-  "/:id",
-  validateIdParam,
-  validateUpdateTable,
-  tableController.updateTable
+router.put("/:id", validateIdParam, validateUpdateTable, (req, res, next) =>
+  tableController.updateTable(req, res, next)
 );
 
 /**
@@ -196,6 +199,8 @@ router.put(
  *       500:
  *         description: Erro interno
  */
-router.delete("/:id", validateIdParam, tableController.deleteTable);
+router.delete("/:id", validateIdParam, (req, res, next) =>
+  tableController.deleteTable(req, res, next)
+);
 
 export default router;

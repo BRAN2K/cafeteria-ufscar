@@ -51,7 +51,9 @@ const productController = new ProductController();
  *       500:
  *         description: Erro interno
  */
-router.post("/", validateCreateProduct, productController.createProduct);
+router.post("/", validateCreateProduct, (req, res, next) =>
+  productController.createProduct(req, res, next)
+);
 
 /**
  * @openapi
@@ -98,7 +100,9 @@ router.post("/", validateCreateProduct, productController.createProduct);
  *       500:
  *         description: Erro interno
  */
-router.get("/", validatePagination, productController.getAllProducts);
+router.get("/", validatePagination, (req, res, next) =>
+  productController.getAllProducts(req, res, next)
+);
 
 /**
  * @openapi
@@ -124,7 +128,9 @@ router.get("/", validatePagination, productController.getAllProducts);
  *       500:
  *         description: Erro interno
  */
-router.get("/:id", validateIdParam, productController.getProductById);
+router.get("/:id", validateIdParam, (req, res, next) =>
+  productController.getProductById(req, res, next)
+);
 
 /**
  * @openapi
@@ -170,11 +176,8 @@ router.get("/:id", validateIdParam, productController.getProductById);
  *       500:
  *         description: Erro interno
  */
-router.put(
-  "/:id",
-  validateIdParam,
-  validateUpdateProduct,
-  productController.updateProduct
+router.put("/:id", validateIdParam, validateUpdateProduct, (req, res, next) =>
+  productController.updateProduct(req, res, next)
 );
 
 /**
@@ -201,7 +204,9 @@ router.put(
  *       500:
  *         description: Erro interno
  */
-router.delete("/:id", validateIdParam, productController.deleteProduct);
+router.delete("/:id", validateIdParam, (req, res, next) =>
+  productController.deleteProduct(req, res, next)
+);
 
 /**
  * @openapi
@@ -244,7 +249,7 @@ router.post(
   "/:id/increase",
   validateIdParam,
   validateStockAdjustment,
-  productController.increaseStock
+  (req, res, next) => productController.increaseStock(req, res, next)
 );
 
 /**
@@ -288,7 +293,7 @@ router.post(
   "/:id/decrease",
   validateIdParam,
   validateStockAdjustment,
-  productController.decreaseStock
+  (req, res, next) => productController.decreaseStock(req, res, next)
 );
 
 export default router;

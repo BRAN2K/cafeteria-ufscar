@@ -43,7 +43,9 @@ const orderController = new OrderController();
  *       500:
  *         description: Erro interno do servidor
  */
-router.post("/", validateCreateOrder, orderController.createOrder);
+router.post("/", validateCreateOrder, (req, res, next) =>
+  orderController.createOrder(req, res, next)
+);
 
 /**
  * @openapi
@@ -94,7 +96,9 @@ router.post("/", validateCreateOrder, orderController.createOrder);
  *       500:
  *         description: Erro interno do servidor
  */
-router.get("/", validatePagination, orderController.getAllOrders);
+router.get("/", validatePagination, (req, res, next) =>
+  orderController.getAllOrders(req, res, next)
+);
 
 /**
  * @openapi
@@ -124,7 +128,9 @@ router.get("/", validatePagination, orderController.getAllOrders);
  *       500:
  *         description: Erro interno do servidor
  */
-router.get("/:id", validateIdParam, orderController.getOrderById);
+router.get("/:id", validateIdParam, (req, res, next) =>
+  orderController.getOrderById(req, res, next)
+);
 
 /**
  * @openapi
@@ -161,11 +167,8 @@ router.get("/:id", validateIdParam, orderController.getOrderById);
  *       500:
  *         description: Erro interno do servidor
  */
-router.put(
-  "/:id",
-  validateIdParam,
-  validateUpdateOrder,
-  orderController.updateOrder
+router.put("/:id", validateIdParam, validateUpdateOrder, (req, res, next) =>
+  orderController.updateOrder(req, res, next)
 );
 
 /**
@@ -192,6 +195,8 @@ router.put(
  *       500:
  *         description: Erro interno do servidor
  */
-router.delete("/:id", validateIdParam, orderController.deleteOrder);
+router.delete("/:id", validateIdParam, (req, res, next) =>
+  orderController.deleteOrder(req, res, next)
+);
 
 export default router;

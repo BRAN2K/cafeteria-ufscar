@@ -47,7 +47,9 @@ const customerController = new CustomerController();
  *       500:
  *         description: Erro interno do servidor
  */
-router.post("/", validateCreateCustomer, customerController.createCustomer);
+router.post("/", validateCreateCustomer, (req, res, next) =>
+  customerController.createCustomer(req, res, next)
+);
 
 /**
  * @openapi
@@ -99,7 +101,9 @@ router.post("/", validateCreateCustomer, customerController.createCustomer);
  *       500:
  *         description: Erro interno
  */
-router.get("/", validatePagination, customerController.getAllCustomers);
+router.get("/", validatePagination, (req, res, next) =>
+  customerController.getAllCustomers(req, res, next)
+);
 
 /**
  * @openapi
@@ -125,7 +129,9 @@ router.get("/", validatePagination, customerController.getAllCustomers);
  *       500:
  *         description: Erro interno do servidor
  */
-router.get("/:id", validateIdParam, customerController.getCustomerById);
+router.get("/:id", validateIdParam, (req, res, next) =>
+  customerController.getCustomerById(req, res, next)
+);
 
 /**
  * @openapi
@@ -168,11 +174,8 @@ router.get("/:id", validateIdParam, customerController.getCustomerById);
  *       500:
  *         description: Erro interno
  */
-router.put(
-  "/:id",
-  validateIdParam,
-  validateUpdateCustomer,
-  customerController.updateCustomer
+router.put("/:id", validateIdParam, validateUpdateCustomer, (req, res, next) =>
+  customerController.updateCustomer(req, res, next)
 );
 
 /**
@@ -199,6 +202,8 @@ router.put(
  *       500:
  *         description: Erro interno
  */
-router.delete("/:id", validateIdParam, customerController.deleteCustomer);
+router.delete("/:id", validateIdParam, (req, res, next) =>
+  customerController.deleteCustomer(req, res, next)
+);
 
 export default router;
