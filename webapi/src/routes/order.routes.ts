@@ -16,7 +16,7 @@ const orderController = new OrderController();
  * @openapi
  * /orders:
  *   post:
- *     summary: Cria um novo pedido
+ *     summary: Cria um novo pedido com itens inclusos
  *     tags:
  *       - Orders
  *     requestBody:
@@ -24,20 +24,22 @@ const orderController = new OrderController();
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               table_id:
- *                 type: number
- *               employee_id:
- *                 type: number
- *             example:
- *               table_id: 1
- *               employee_id: 2
+ *             $ref: "#/components/schemas/CreateOrderInput"
+ *           example:
+ *             table_id: 1
+ *             employee_id: 2
+ *             items:
+ *               - product_id: 3
+ *                 quantity: 2
+ *               - product_id: 1
+ *                 quantity: 1
  *     responses:
  *       201:
  *         description: Pedido criado com sucesso
  *       400:
- *         description: Erro de validação
+ *         description: Erro de validação ou estoque insuficiente
+ *       404:
+ *         description: Produto não encontrado
  *       500:
  *         description: Erro interno do servidor
  */
@@ -47,7 +49,7 @@ router.post("/", validateCreateOrder, orderController.createOrder);
  * @openapi
  * /orders:
  *   get:
- *     summary: Retorna uma lista paginada de pedidos
+ *     summary: Retorna uma lista paginada de pedidos (com itens e produtos)
  *     tags:
  *       - Orders
  *     parameters:
@@ -56,7 +58,7 @@ router.post("/", validateCreateOrder, orderController.createOrder);
  *         schema:
  *           type: string
  *         required: false
- *         description: Filtro para pesquisar pedidos pelo campo status (e.g. "pending", "delivered")
+ *         description: Filtro para pesquisar pedidos pelo campo status
  *       - in: query
  *         name: page
  *         schema:
@@ -71,7 +73,7 @@ router.post("/", validateCreateOrder, orderController.createOrder);
  *         description: Quantidade de itens por página (padrão = 10, máximo = 100)
  *     responses:
  *       200:
- *         description: Lista de pedidos paginada
+ *         description: Lista de pedidos paginada com itens
  *         content:
  *           application/json:
  *             schema:
@@ -79,17 +81,14 @@ router.post("/", validateCreateOrder, orderController.createOrder);
  *               properties:
  *                 page:
  *                   type: integer
- *                   description: Página atual
  *                 limit:
  *                   type: integer
- *                   description: Número de itens retornados por página
  *                 total:
  *                   type: integer
- *                   description: Total de registros que correspondem ao filtro
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Order'
+ *                     $ref: "#/components/schemas/OrderWithItems"
  *       400:
  *         description: Parâmetros inválidos (falha de validação)
  *       500:
@@ -101,7 +100,7 @@ router.get("/", validatePagination, orderController.getAllOrders);
  * @openapi
  * /orders/{id}:
  *   get:
- *     summary: Retorna um pedido específico pelo ID
+ *     summary: Retorna um pedido específico pelo ID, com itens e produtos
  *     tags:
  *       - Orders
  *     parameters:
@@ -114,6 +113,10 @@ router.get("/", validatePagination, orderController.getAllOrders);
  *     responses:
  *       200:
  *         description: Retorna o pedido correspondente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/OrderWithItems"
  *       400:
  *         description: Erro de validação
  *       404:
@@ -127,7 +130,7 @@ router.get("/:id", validateIdParam, orderController.getOrderById);
  * @openapi
  * /orders/{id}:
  *   put:
- *     summary: Atualiza os dados de um pedido específico
+ *     summary: Atualiza os dados de um pedido específico (SEM alterar itens)
  *     tags:
  *       - Orders
  *     parameters:
