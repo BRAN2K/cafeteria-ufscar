@@ -3,6 +3,7 @@ import { CustomerController } from "../controllers/customer.controller";
 import {
   validateCreateCustomer,
   validateUpdateCustomer,
+  validateUpdatePassword,
 } from "../validations/customer.validations";
 import {
   validatePagination,
@@ -255,6 +256,63 @@ router.delete(
   validateIdParam,
   checkCustomerOwnership,
   (req, res, next) => customerController.deleteCustomer(req, res, next)
+);
+
+/**
+ * @openapi
+ * /customers/{id}/password:
+ *   put:
+ *     summary: Atualiza a senha de um cliente, exigindo a senha antiga
+ *     tags:
+ *       - Customers
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: number
+ *         description: ID do cliente a ter a senha atualizada
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               oldPassword:
+ *                 type: string
+ *               newPassword:
+ *                 type: string
+ *             required:
+ *               - oldPassword
+ *               - newPassword
+ *             example:
+ *               oldPassword: "oldpass123"
+ *               newPassword: "myNewPass456"
+ *     responses:
+ *       200:
+ *         description: Senha atualizada com sucesso
+ *       400:
+ *         description: Erro de validação
+ *       401:
+ *         description: Falha de autenticação ou oldPassword incorreta
+ *       403:
+ *         description: Role não autorizada ou tentando alterar outro cliente
+ *       404:
+ *         description: Cliente não encontrado
+ *       500:
+ *         description: Erro interno do servidor
+ */
+router.put(
+  "/:id/password",
+  checkAuth,
+  checkRole(["admin", "customer"]),
+  validateIdParam,
+  checkCustomerOwnership,
+  validateUpdatePassword,
+  (req, res, next) => customerController.updatePassword(req, res, next)
 );
 
 export default router;

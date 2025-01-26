@@ -90,4 +90,34 @@ export class CustomerService {
       throw createError.NotFound("Customer not found");
     }
   }
+
+  public async updatePassword(
+    id: number,
+    oldPassword: string,
+    newPassword: string
+  ): Promise<void> {
+    const customer = await db("customers").where({ id }).first();
+
+    if (!customer) {
+      throw createError.NotFound("Customer not found");
+    }
+
+    const match = await bcrypt.compare(oldPassword, customer.password);
+    if (!match) {
+      throw createError.Unauthorized("Old password is incorrect.");
+    }
+
+    const saltRounds = 10;
+    const newHash = await bcrypt.hash(newPassword, saltRounds);
+
+    const updatedCount = await db("customers")
+      .where({ id })
+      .update({ password: newHash });
+
+    if (!updatedCount) {
+      throw createError.InternalServerError(
+        "Failed to update password. Please try again."
+      );
+    }
+  }
 }

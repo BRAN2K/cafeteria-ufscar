@@ -83,4 +83,20 @@ export class CustomerController {
       next(error);
     }
   }
+
+  public async updatePassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const { oldPassword, newPassword } = req.body;
+      await customerService.updatePassword(
+        Number(id),
+        oldPassword,
+        newPassword
+      );
+
+      res.json({ message: "Password updated successfully." });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
