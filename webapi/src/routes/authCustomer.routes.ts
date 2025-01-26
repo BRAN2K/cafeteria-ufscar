@@ -11,6 +11,8 @@ const authController = new AuthController();
  * /auth/customer/login:
  *   post:
  *     summary: Login de cliente
+ *     tags:
+ *       - Auth
  *     requestBody:
  *       required: true
  *       content:
@@ -29,8 +31,6 @@ const authController = new AuthController();
 router.post("/login", (req, res, next) =>
   authController.loginCustomer(req, res, next)
 );
-
-// #TODO: Implementar rota de logout
 
 // #TODO: Implementar rota de atualização de senha
 

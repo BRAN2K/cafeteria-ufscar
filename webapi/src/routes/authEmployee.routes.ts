@@ -11,6 +11,8 @@ const authController = new AuthController();
  * /auth/employee/login:
  *   post:
  *     summary: Login de funcionário
+ *     tags:
+ *       - Auth
  *     requestBody:
  *       required: true
  *       content:
