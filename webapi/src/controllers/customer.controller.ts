@@ -1,12 +1,22 @@
 import { NextFunction, Request, Response } from "express";
 import createError from "http-errors";
+import bcrypt from "bcrypt";
 import db from "../database";
 
 export class CustomerController {
   public async createCustomer(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, email, phone } = req.body;
-      const [id] = await db("customers").insert({ name, email, phone });
+      const { name, email, phone, password } = req.body;
+
+      const saltRounds = 10;
+      const passwordHash = await bcrypt.hash(password, saltRounds);
+
+      const [id] = await db("customers").insert({
+        name,
+        email,
+        phone,
+        password: passwordHash,
+      });
 
       res.status(201).json({
         message: "Customer created",
@@ -23,7 +33,6 @@ export class CustomerController {
     next: NextFunction
   ) {
     try {
-      // Se quiser paginação, obtemos page, limit e search do req.query
       const {
         page = 1,
         limit = 10,
@@ -37,7 +46,6 @@ export class CustomerController {
       const offset = (page - 1) * limit;
       let query = db("customers");
 
-      // Exemplo: filtrar por nome ou email
       if (search) {
         query = query.where((builder) => {
           builder
@@ -46,11 +54,9 @@ export class CustomerController {
         });
       }
 
-      // Pega contagem total
       const [countResult] = await query.clone().count({ total: "*" });
       const total = Number(countResult.total) || 0;
 
-      // Aplica paginação
       const customers = await query.select("*").limit(limit).offset(offset);
 
       res.json({

@@ -9,6 +9,8 @@ import {
   validatePagination,
   validateIdParam,
 } from "../validations/shared.validations";
+import { checkAuth } from "../middlewares/checkAuth";
+import { checkRole } from "../middlewares/checkRole";
 
 const router = Router();
 const productController = new ProductController();
@@ -20,6 +22,8 @@ const productController = new ProductController();
  *     summary: Cria um novo produto
  *     tags:
  *       - Products
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -48,11 +52,19 @@ const productController = new ProductController();
  *         description: Produto criado com sucesso
  *       400:
  *         description: Erro de validação
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       500:
  *         description: Erro interno
  */
-router.post("/", validateCreateProduct, (req, res, next) =>
-  productController.createProduct(req, res, next)
+router.post(
+  "/",
+  checkAuth,
+  checkRole(["admin"]),
+  validateCreateProduct,
+  (req, res, next) => productController.createProduct(req, res, next)
 );
 
 /**
@@ -62,6 +74,8 @@ router.post("/", validateCreateProduct, (req, res, next) =>
  *     summary: Retorna lista paginada de produtos
  *     tags:
  *       - Products
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: query
  *         name: search
@@ -97,11 +111,19 @@ router.post("/", validateCreateProduct, (req, res, next) =>
  *                     type: object
  *       400:
  *         description: Parâmetros inválidos
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       500:
  *         description: Erro interno
  */
-router.get("/", validatePagination, (req, res, next) =>
-  productController.getAllProducts(req, res, next)
+router.get(
+  "/",
+  checkAuth,
+  checkRole(["admin", "manager", "attendant"]),
+  validatePagination,
+  (req, res, next) => productController.getAllProducts(req, res, next)
 );
 
 /**
@@ -111,6 +133,8 @@ router.get("/", validatePagination, (req, res, next) =>
  *     summary: Retorna um produto específico
  *     tags:
  *       - Products
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -123,13 +147,21 @@ router.get("/", validatePagination, (req, res, next) =>
  *         description: Produto encontrado
  *       400:
  *         description: Parâmetro inválido
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       404:
  *         description: Produto não encontrado
  *       500:
  *         description: Erro interno
  */
-router.get("/:id", validateIdParam, (req, res, next) =>
-  productController.getProductById(req, res, next)
+router.get(
+  "/:id",
+  checkAuth,
+  checkRole(["admin", "manager", "attendant"]),
+  validateIdParam,
+  (req, res, next) => productController.getProductById(req, res, next)
 );
 
 /**
@@ -139,6 +171,8 @@ router.get("/:id", validateIdParam, (req, res, next) =>
  *     summary: Atualiza os dados de um produto
  *     tags:
  *       - Products
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -171,13 +205,22 @@ router.get("/:id", validateIdParam, (req, res, next) =>
  *         description: Produto atualizado com sucesso
  *       400:
  *         description: Erro de validação
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       404:
  *         description: Produto não encontrado
  *       500:
  *         description: Erro interno
  */
-router.put("/:id", validateIdParam, validateUpdateProduct, (req, res, next) =>
-  productController.updateProduct(req, res, next)
+router.put(
+  "/:id",
+  checkAuth,
+  checkRole(["admin"]),
+  validateIdParam,
+  validateUpdateProduct,
+  (req, res, next) => productController.updateProduct(req, res, next)
 );
 
 /**
@@ -187,6 +230,8 @@ router.put("/:id", validateIdParam, validateUpdateProduct, (req, res, next) =>
  *     summary: Remove um produto
  *     tags:
  *       - Products
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -199,13 +244,21 @@ router.put("/:id", validateIdParam, validateUpdateProduct, (req, res, next) =>
  *         description: Produto removido com sucesso
  *       400:
  *         description: Parâmetro inválido
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       404:
  *         description: Produto não encontrado
  *       500:
  *         description: Erro interno
  */
-router.delete("/:id", validateIdParam, (req, res, next) =>
-  productController.deleteProduct(req, res, next)
+router.delete(
+  "/:id",
+  checkAuth,
+  checkRole(["admin"]),
+  validateIdParam,
+  (req, res, next) => productController.deleteProduct(req, res, next)
 );
 
 /**
@@ -215,6 +268,8 @@ router.delete("/:id", validateIdParam, (req, res, next) =>
  *     summary: Aumenta o estoque de um produto
  *     tags:
  *       - Products
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -240,6 +295,10 @@ router.delete("/:id", validateIdParam, (req, res, next) =>
  *         description: Estoque aumentado com sucesso
  *       400:
  *         description: Parâmetro inválido ou falha ao ajustar estoque
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       404:
  *         description: Produto não encontrado
  *       500:
@@ -247,6 +306,8 @@ router.delete("/:id", validateIdParam, (req, res, next) =>
  */
 router.post(
   "/:id/increase",
+  checkAuth,
+  checkRole(["admin, manager"]),
   validateIdParam,
   validateStockAdjustment,
   (req, res, next) => productController.increaseStock(req, res, next)
@@ -259,6 +320,8 @@ router.post(
  *     summary: Diminui o estoque de um produto
  *     tags:
  *       - Products
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -284,6 +347,10 @@ router.post(
  *         description: Estoque diminuído com sucesso
  *       400:
  *         description: Parâmetro inválido ou estoque insuficiente
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       404:
  *         description: Produto não encontrado
  *       500:
@@ -291,6 +358,8 @@ router.post(
  */
 router.post(
   "/:id/decrease",
+  checkAuth,
+  checkRole(["admin, manager"]),
   validateIdParam,
   validateStockAdjustment,
   (req, res, next) => productController.decreaseStock(req, res, next)

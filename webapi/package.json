@@ -17,9 +17,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
     "@types/joi": "^17.2.3",
+    "@types/jsonwebtoken": "^9.0.8",
     "@types/knex": "^0.16.1",
     "@types/luxon": "^3.4.2",
     "@types/morgan": "^1.9.9",
@@ -35,10 +37,12 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "http-errors": "^2.0.0",
     "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
     "knex": "^3.1.0",
     "luxon": "^3.5.0",
     "morgan": "^1.10.0",

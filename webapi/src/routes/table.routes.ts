@@ -8,6 +8,8 @@ import {
   validatePagination,
   validateIdParam,
 } from "../validations/shared.validations";
+import { checkAuth } from "../middlewares/checkAuth";
+import { checkRole } from "../middlewares/checkRole";
 
 const router = Router();
 const tableController = new TableController();
@@ -19,6 +21,8 @@ const tableController = new TableController();
  *     summary: Cria uma nova mesa
  *     tags:
  *       - Tables
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -44,11 +48,19 @@ const tableController = new TableController();
  *         description: Mesa criada com sucesso
  *       400:
  *         description: Erro de validação
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       500:
  *         description: Erro interno do servidor
  */
-router.post("/", validateCreateTable, (req, res, next) =>
-  tableController.createTable(req, res, next)
+router.post(
+  "/",
+  checkAuth,
+  checkRole(["admin"]),
+  validateCreateTable,
+  (req, res, next) => tableController.createTable(req, res, next)
 );
 
 /**
@@ -58,6 +70,8 @@ router.post("/", validateCreateTable, (req, res, next) =>
  *     summary: Retorna lista paginada de mesas
  *     tags:
  *       - Tables
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: query
  *         name: page
@@ -95,11 +109,19 @@ router.post("/", validateCreateTable, (req, res, next) =>
  *                     type: object
  *       400:
  *         description: Parâmetros inválidos
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       500:
  *         description: Erro interno
  */
-router.get("/", validatePagination, (req, res, next) =>
-  tableController.getAllTables(req, res, next)
+router.get(
+  "/",
+  checkAuth,
+  checkRole(["admin", "manager", "attendant", "customer"]),
+  validatePagination,
+  (req, res, next) => tableController.getAllTables(req, res, next)
 );
 
 /**
@@ -109,6 +131,8 @@ router.get("/", validatePagination, (req, res, next) =>
  *     summary: Retorna uma mesa específica pelo ID
  *     tags:
  *       - Tables
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -121,13 +145,21 @@ router.get("/", validatePagination, (req, res, next) =>
  *         description: Mesa encontrada
  *       400:
  *         description: Parâmetro inválido
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       404:
  *         description: Mesa não encontrada
  *       500:
  *         description: Erro interno
  */
-router.get("/:id", validateIdParam, (req, res, next) =>
-  tableController.getTableById(req, res, next)
+router.get(
+  "/:id",
+  checkAuth,
+  checkRole(["admin", "manager", "attendant", "customer"]),
+  validateIdParam,
+  (req, res, next) => tableController.getTableById(req, res, next)
 );
 
 /**
@@ -137,6 +169,8 @@ router.get("/:id", validateIdParam, (req, res, next) =>
  *     summary: Atualiza os dados de uma mesa
  *     tags:
  *       - Tables
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -166,13 +200,22 @@ router.get("/:id", validateIdParam, (req, res, next) =>
  *         description: Mesa atualizada com sucesso
  *       400:
  *         description: Erro de validação
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       404:
  *         description: Mesa não encontrada
  *       500:
  *         description: Erro interno
  */
-router.put("/:id", validateIdParam, validateUpdateTable, (req, res, next) =>
-  tableController.updateTable(req, res, next)
+router.put(
+  "/:id",
+  checkAuth,
+  checkRole(["admin", "manager"]),
+  validateIdParam,
+  validateUpdateTable,
+  (req, res, next) => tableController.updateTable(req, res, next)
 );
 
 /**
@@ -182,6 +225,8 @@ router.put("/:id", validateIdParam, validateUpdateTable, (req, res, next) =>
  *     summary: Remove uma mesa específica
  *     tags:
  *       - Tables
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -194,13 +239,21 @@ router.put("/:id", validateIdParam, validateUpdateTable, (req, res, next) =>
  *         description: Mesa removida com sucesso
  *       400:
  *         description: Parâmetro inválido
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       404:
  *         description: Mesa não encontrada
  *       500:
  *         description: Erro interno
  */
-router.delete("/:id", validateIdParam, (req, res, next) =>
-  tableController.deleteTable(req, res, next)
+router.delete(
+  "/:id",
+  checkAuth,
+  checkRole(["admin"]),
+  validateIdParam,
+  (req, res, next) => tableController.deleteTable(req, res, next)
 );
 
 export default router;

@@ -19,6 +19,13 @@ const createEmployeeSchema = Joi.object({
       "any.required": "role is required",
       "any.only": "role must be one of: admin, attendant, manager, other",
     }),
+  password: Joi.string().min(6).max(100).required().messages({
+    "string.base": "password must be a string",
+    "string.empty": "password cannot be empty",
+    "string.min": "password must have at least {#limit} characters",
+    "string.max": "password must have at most {#limit} characters",
+    "any.required": "password is required",
+  }),
 });
 
 export function validateCreateEmployee(

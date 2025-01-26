@@ -14,3 +14,5 @@ export const DB_USER = process.env.DB_USER || "cafeteria";
 export const DB_PASSWORD = process.env.DB_PASSWORD || "ufscar";
 export const DB_ROOT_PASSWORD = process.env.DB_PASSWORD || "ufscar";
 export const DB_NAME = process.env.DB_NAME || "cafeteria_db";
+
+export const JWT_SECRET = process.env.JWT_SECRET || "secretjwt";

@@ -1,12 +1,22 @@
 import { NextFunction, Request, Response } from "express";
 import createError from "http-errors";
+import bcrypt from "bcrypt";
 import db from "../database";
 
 export class EmployeeController {
   public async createEmployee(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, email, role } = req.body;
-      const [id] = await db("employees").insert({ name, email, role });
+      const { name, email, role, password } = req.body;
+
+      const saltRounds = 10;
+      const passwordHash = await bcrypt.hash(password, saltRounds);
+
+      const [id] = await db("employees").insert({
+        name,
+        email,
+        role,
+        password: passwordHash,
+      });
 
       res.status(201).json({
         message: "Employee created",
@@ -36,7 +46,6 @@ export class EmployeeController {
       const offset = (page - 1) * limit;
       let query = db("employees");
 
-      // Se quiser buscar por nome, e search não for vazio, adicione algo assim:
       if (search) {
         query = query.where("name", "like", `%${search}%`);
       }

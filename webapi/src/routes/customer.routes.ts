@@ -8,6 +8,8 @@ import {
   validatePagination,
   validateIdParam,
 } from "../validations/shared.validations";
+import { checkAuth } from "../middlewares/checkAuth";
+import { checkRole } from "../middlewares/checkRole";
 
 const router = Router();
 const customerController = new CustomerController();
@@ -32,13 +34,17 @@ const customerController = new CustomerController();
  *                 type: string
  *               phone:
  *                 type: string
+ *               password:
+ *                 type: string
  *             required:
  *               - name
  *               - email
+ *               - password
  *             example:
  *               name: "Jon Snow"
  *               email: "jon@example.com"
  *               phone: "999-888-777"
+ *               password: "winteriscoming"
  *     responses:
  *       201:
  *         description: Cliente criado com sucesso
@@ -58,6 +64,8 @@ router.post("/", validateCreateCustomer, (req, res, next) =>
  *     summary: Retorna lista paginada de clientes
  *     tags:
  *       - Customers
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: query
  *         name: search
@@ -98,11 +106,19 @@ router.post("/", validateCreateCustomer, (req, res, next) =>
  *                     type: object
  *       400:
  *         description: Parâmetros inválidos
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       500:
  *         description: Erro interno
  */
-router.get("/", validatePagination, (req, res, next) =>
-  customerController.getAllCustomers(req, res, next)
+router.get(
+  "/",
+  checkAuth,
+  checkRole(["admin"]),
+  validatePagination,
+  (req, res, next) => customerController.getAllCustomers(req, res, next)
 );
 
 /**
@@ -112,6 +128,8 @@ router.get("/", validatePagination, (req, res, next) =>
  *     summary: Retorna um cliente específico pelo ID
  *     tags:
  *       - Customers
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -124,13 +142,23 @@ router.get("/", validatePagination, (req, res, next) =>
  *         description: Cliente encontrado
  *       400:
  *         description: Parâmetro inválido
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       404:
  *         description: Cliente não encontrado
  *       500:
  *         description: Erro interno do servidor
  */
-router.get("/:id", validateIdParam, (req, res, next) =>
-  customerController.getCustomerById(req, res, next)
+router.get(
+  // #TODO: Implementar lógica de recuperar dados do cliente autenticado
+  // (cliente não pode recuperar dados de outro cliente que não seja ele próprio)
+  "/:id",
+  checkAuth,
+  checkRole(["admin", "customer"]),
+  validateIdParam,
+  (req, res, next) => customerController.getCustomerById(req, res, next)
 );
 
 /**
@@ -140,6 +168,8 @@ router.get("/:id", validateIdParam, (req, res, next) =>
  *     summary: Atualiza os dados de um cliente
  *     tags:
  *       - Customers
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -169,13 +199,24 @@ router.get("/:id", validateIdParam, (req, res, next) =>
  *         description: Cliente atualizado com sucesso
  *       400:
  *         description: Erro de validação
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       404:
  *         description: Cliente não encontrado
  *       500:
  *         description: Erro interno
  */
-router.put("/:id", validateIdParam, validateUpdateCustomer, (req, res, next) =>
-  customerController.updateCustomer(req, res, next)
+router.put(
+  // #TODO: Implementar lógica de atualizar dados do cliente autenticado
+  // (cliente não pode atualizar dados de outro cliente que não seja ele próprio)
+  "/:id",
+  checkAuth,
+  checkRole(["admin", "customer"]),
+  validateIdParam,
+  validateUpdateCustomer,
+  (req, res, next) => customerController.updateCustomer(req, res, next)
 );
 
 /**
@@ -185,6 +226,8 @@ router.put("/:id", validateIdParam, validateUpdateCustomer, (req, res, next) =>
  *     summary: Remove um cliente específico
  *     tags:
  *       - Customers
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -197,13 +240,23 @@ router.put("/:id", validateIdParam, validateUpdateCustomer, (req, res, next) =>
  *         description: Cliente removido com sucesso
  *       400:
  *         description: Parâmetro inválido
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       404:
  *         description: Cliente não encontrado
  *       500:
  *         description: Erro interno
  */
-router.delete("/:id", validateIdParam, (req, res, next) =>
-  customerController.deleteCustomer(req, res, next)
+router.delete(
+  // #TODO: Implementar lógica de deletar dados do cliente autenticado
+  // (cliente não pode deletar dados de outro cliente que não seja ele próprio)
+  "/:id",
+  checkAuth,
+  checkRole(["admin", "customer"]),
+  validateIdParam,
+  (req, res, next) => customerController.deleteCustomer(req, res, next)
 );
 
 export default router;

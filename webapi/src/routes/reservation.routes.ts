@@ -9,6 +9,8 @@ import {
   validatePagination,
   validateIdParam,
 } from "../validations/shared.validations";
+import { checkAuth } from "../middlewares/checkAuth";
+import { checkRole } from "../middlewares/checkRole";
 
 const router = Router();
 const reservationController = new ReservationController();
@@ -20,6 +22,8 @@ const reservationController = new ReservationController();
  *     summary: Cria uma nova reserva
  *     tags:
  *       - Reservations
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -55,13 +59,23 @@ const reservationController = new ReservationController();
  *         description: Reserva criada com sucesso
  *       400:
  *         description: Erro de validação
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       409:
  *         description: Conflito de horário/mesa
  *       500:
  *         description: Erro interno
  */
-router.post("/", validateCreateReservation, (req, res, next) =>
-  reservationController.createReservation(req, res, next)
+router.post(
+  // #TODO: Implementar lógica de criação de reservas do cliente autenticado
+  // (cliente não pode criar reservas em nome de outros clientes)
+  "/",
+  checkAuth,
+  checkRole(["admin", "manager", "attendant", "customer"]),
+  validateCreateReservation,
+  (req, res, next) => reservationController.createReservation(req, res, next)
 );
 
 /**
@@ -71,6 +85,8 @@ router.post("/", validateCreateReservation, (req, res, next) =>
  *     summary: Retorna lista paginada de reservas com filtros opcionais
  *     tags:
  *       - Reservations
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: query
  *         name: status
@@ -122,11 +138,21 @@ router.post("/", validateCreateReservation, (req, res, next) =>
  *                     $ref: '#/components/schemas/Reservation'
  *       400:
  *         description: Parâmetros inválidos
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       500:
  *         description: Erro interno
  */
-router.get("/", validatePagination, (req, res, next) =>
-  reservationController.getAllReservations(req, res, next)
+router.get(
+  // #TODO: Implementar lógica de recuperação de informaçoes de reservas do cliente autenticado
+  // (cliente não pode recuperar informações de reservas que não são dele)
+  "/",
+  checkAuth,
+  checkRole(["admin", "manager", "attendant", "customer"]),
+  validatePagination,
+  (req, res, next) => reservationController.getAllReservations(req, res, next)
 );
 
 /**
@@ -136,6 +162,8 @@ router.get("/", validatePagination, (req, res, next) =>
  *     summary: Verifica mesas disponíveis em um intervalo de tempo
  *     tags:
  *       - Reservations
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: query
  *         name: start
@@ -161,11 +189,19 @@ router.get("/", validatePagination, (req, res, next) =>
  *                     $ref: '#/components/schemas/Table'
  *       400:
  *         description: Parâmetros inválidos (sem start ou end)
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       500:
  *         description: Erro interno
  */
-router.get("/check-availability", validateCheckAvailability, (req, res, next) =>
-  reservationController.checkAvailability(req, res, next)
+router.get(
+  "/check-availability",
+  checkAuth,
+  checkRole(["admin", "manager", "attendant", "customer"]),
+  validateCheckAvailability,
+  (req, res, next) => reservationController.checkAvailability(req, res, next)
 );
 
 /**
@@ -175,6 +211,8 @@ router.get("/check-availability", validateCheckAvailability, (req, res, next) =>
  *     summary: Retorna uma reserva específica pelo ID
  *     tags:
  *       - Reservations
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -191,13 +229,23 @@ router.get("/check-availability", validateCheckAvailability, (req, res, next) =>
  *               $ref: '#/components/schemas/Reservation'
  *       400:
  *         description: Parâmetro inválido
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       404:
  *         description: Reserva não encontrada
  *       500:
  *         description: Erro interno
  */
-router.get("/:id", validateIdParam, (req, res, next) =>
-  reservationController.getReservationById(req, res, next)
+router.get(
+  // #TODO: Implementar lógica de recuperação de informaçoes de reserva do cliente autenticado
+  // (cliente não pode recuperar informações de uma reserva que não são dele)
+  "/:id",
+  checkAuth,
+  checkRole(["admin", "manager", "attendant", "customer"]),
+  validateIdParam,
+  (req, res, next) => reservationController.getReservationById(req, res, next)
 );
 
 /**
@@ -207,6 +255,8 @@ router.get("/:id", validateIdParam, (req, res, next) =>
  *     summary: Atualiza os dados de uma reserva
  *     tags:
  *       - Reservations
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -244,6 +294,10 @@ router.get("/:id", validateIdParam, (req, res, next) =>
  *         description: Reserva atualizada com sucesso
  *       400:
  *         description: Erro de validação
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       404:
  *         description: Reserva não encontrada
  *       409:
@@ -252,7 +306,11 @@ router.get("/:id", validateIdParam, (req, res, next) =>
  *         description: Erro interno
  */
 router.put(
+  // #TODO: Implementar lógica de atualização de reserva do cliente autenticado
+  // (cliente não pode atualizar reservas que não são dele)
   "/:id",
+  checkAuth,
+  checkRole(["admin", "manager", "attendant", "customer"]),
   validateIdParam,
   validateUpdateReservation,
   (req, res, next) => reservationController.updateReservation(req, res, next)
@@ -265,6 +323,8 @@ router.put(
  *     summary: Cancela explicitamente uma reserva (status = "canceled")
  *     tags:
  *       - Reservations
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -275,13 +335,23 @@ router.put(
  *     responses:
  *       200:
  *         description: Reserva cancelada com sucesso
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       404:
  *         description: Reserva não encontrada ou já cancelada
  *       500:
  *         description: Erro interno
  */
-router.patch("/:id/cancel", validateIdParam, (req, res, next) =>
-  reservationController.cancelReservation(req, res, next)
+router.patch(
+  // #TODO: Implementar lógica de cancelamento de reserva do cliente autenticado
+  // (cliente não pode cancelar reservas que não são dele)
+  "/:id/cancel",
+  checkAuth,
+  checkRole(["admin", "manager", "attendant", "customer"]),
+  validateIdParam,
+  (req, res, next) => reservationController.cancelReservation(req, res, next)
 );
 
 export default router;

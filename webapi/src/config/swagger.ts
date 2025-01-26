@@ -9,6 +9,20 @@ const swaggerOptions: Options = {
       description:
         "Documentação da API para o sistema de gestão da Cafeteria UFSCar",
     },
+    components: {
+      securitySchemes: {
+        BearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+    security: [
+      {
+        BearerAuth: [],
+      },
+    ],
   },
   apis: ["src/routes/*.ts", "src/docs/schemas/*.ts"],
 };

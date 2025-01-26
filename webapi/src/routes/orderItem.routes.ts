@@ -5,6 +5,8 @@ import {
   validatePagination,
   validateIdParam,
 } from "../validations/shared.validations";
+import { checkAuth } from "../middlewares/checkAuth";
+import { checkRole } from "../middlewares/checkRole";
 
 const router = Router();
 const orderItemController = new OrderItemController();
@@ -16,6 +18,8 @@ const orderItemController = new OrderItemController();
  *     summary: Cria um novo item de pedido
  *     tags:
  *       - OrderItems
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -38,13 +42,21 @@ const orderItemController = new OrderItemController();
  *         description: Item de pedido criado com sucesso
  *       400:
  *         description: Erro de validação
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       404:
  *         description: Pedido ou Produto não encontrado
  *       500:
  *         description: Erro interno do servidor
  */
-router.post("/", validateCreateOrderItem, (req, res, next) =>
-  orderItemController.createOrderItem(req, res, next)
+router.post(
+  "/",
+  checkAuth,
+  checkRole(["admin", "manager", "attendant"]),
+  validateCreateOrderItem,
+  (req, res, next) => orderItemController.createOrderItem(req, res, next)
 );
 
 /**
@@ -54,6 +66,8 @@ router.post("/", validateCreateOrderItem, (req, res, next) =>
  *     summary: Retorna lista paginada de itens de pedido
  *     tags:
  *       - OrderItems
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: query
  *         name: order_id
@@ -90,11 +104,19 @@ router.post("/", validateCreateOrderItem, (req, res, next) =>
  *                     $ref: '#/components/schemas/OrderItem'
  *       400:
  *         description: Parâmetros inválidos
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       500:
  *         description: Erro interno do servidor
  */
-router.get("/", validatePagination, (req, res, next) =>
-  orderItemController.getAllOrderItems(req, res, next)
+router.get(
+  "/",
+  checkAuth,
+  checkRole(["admin", "manager", "attendant"]),
+  validatePagination,
+  (req, res, next) => orderItemController.getAllOrderItems(req, res, next)
 );
 
 /**
@@ -104,6 +126,8 @@ router.get("/", validatePagination, (req, res, next) =>
  *     summary: Obtém um item de pedido específico pelo ID
  *     tags:
  *       - OrderItems
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -120,13 +144,21 @@ router.get("/", validatePagination, (req, res, next) =>
  *               $ref: '#/components/schemas/OrderItem'
  *       400:
  *         description: Parâmetro inválido (id não numérico)
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       404:
  *         description: Item de pedido não encontrado
  *       500:
  *         description: Erro interno do servidor
  */
-router.get("/:id", validateIdParam, (req, res, next) =>
-  orderItemController.getOrderItemById(req, res, next)
+router.get(
+  "/:id",
+  checkAuth,
+  checkRole(["admin", "manager", "attendant"]),
+  validateIdParam,
+  (req, res, next) => orderItemController.getOrderItemById(req, res, next)
 );
 
 /**
@@ -136,6 +168,8 @@ router.get("/:id", validateIdParam, (req, res, next) =>
  *     summary: Remove um item de pedido específico
  *     tags:
  *       - OrderItems
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -148,13 +182,21 @@ router.get("/:id", validateIdParam, (req, res, next) =>
  *         description: Item de pedido removido com sucesso
  *       400:
  *         description: Parâmetro inválido
+ *       401:
+ *         description: Falha de autenticação
+ *       403:
+ *         description: Role não autorizada
  *       404:
  *         description: Item de pedido não encontrado
  *       500:
  *         description: Erro interno do servidor
  */
-router.delete("/:id", validateIdParam, (req, res, next) =>
-  orderItemController.deleteOrderItem(req, res, next)
+router.delete(
+  "/:id",
+  checkAuth,
+  checkRole(["admin", "manager", "attendant"]),
+  validateIdParam,
+  (req, res, next) => orderItemController.deleteOrderItem(req, res, next)
 );
 
 export default router;

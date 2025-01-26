@@ -13,6 +13,8 @@ import tableRoutes from "./routes/table.routes";
 import productRoutes from "./routes/product.routes";
 import reservationRoutes from "./routes/reservation.routes";
 import orderItemRoutes from "./routes/orderItem.routes";
+import authCustomerRoutes from "./routes/authCustomer.routes";
+import authEmployeeRoutes from "./routes/authEmployee.routes";
 
 const app = express();
 
@@ -25,6 +27,8 @@ app.get("/", (req, res) => {
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
+app.use("/auth/employee", authEmployeeRoutes);
+app.use("/auth/customer", authCustomerRoutes);
 app.use("/orders", orderRoutes);
 app.use("/employees", employeeRoutes);
 app.use("/customers", customerRoutes);

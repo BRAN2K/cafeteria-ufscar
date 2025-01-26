@@ -37,6 +37,14 @@ export const errorHandler: ErrorRequestHandler = (
       });
       return;
     }
+    if (knexErr.code === "ER_DUP_ENTRY") {
+      // MySQL: Violou uma constraint UNIQUE
+      res.status(400).json({
+        status: "error",
+        message: "A record with the same unique key already exists",
+      });
+      return;
+    }
   }
 
   // Tratando erros que não são http-errors => Internal Server Error
