@@ -1,11 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import createError from "http-errors";
 
-/**
- * Se o usuário for customer, checa se o ID do token coincide
- * com o ID na rota. Se não coincidir, lança erro de Forbidden.
- * Se for outro role (p.ex. 'admin', 'manager'), não faz nada e segue.
- */
 export function checkCustomerOwnership(
   req: Request,
   res: Response,

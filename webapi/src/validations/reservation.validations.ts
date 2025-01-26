@@ -47,7 +47,6 @@ export function validateCreateReservation(
   _res: Response,
   next: NextFunction
 ) {
-  // #TODO: Se quiser, também valide se start_time < end_time, etc.
   const { error } = createReservationSchema.validate(req.body, {
     abortEarly: false,
   });

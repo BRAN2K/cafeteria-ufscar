@@ -111,7 +111,8 @@ export class ReservationService {
     status?: string,
     table_id?: number,
     start_time?: string,
-    end_time?: string
+    end_time?: string,
+    customer_id?: number
   ): Promise<{
     page: number;
     limit: number;
@@ -137,6 +138,9 @@ export class ReservationService {
       query = query.where("end_time", ">=", start_time);
     } else if (end_time) {
       query = query.where("start_time", "<=", end_time);
+    }
+    if (customer_id) {
+      query = query.where("customer_id", customer_id);
     }
 
     const [countResult] = await query.clone().count({ total: "*" });

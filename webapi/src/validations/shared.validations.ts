@@ -15,6 +15,7 @@ export function validatePagination(
 ) {
   const { error, value } = paginationSchema.validate(req.query, {
     abortEarly: false,
+    allowUnknown: true,
   });
 
   if (error) {
@@ -23,7 +24,6 @@ export function validatePagination(
     );
   }
 
-  // Sobrescreve req.query só com valores validados
   req.query = value;
   return next();
 }

@@ -3,14 +3,20 @@ import { ReservationController } from "../controllers/reservation.controller";
 import {
   validateCheckAvailability,
   validateCreateReservation,
+  // validateReservationQuery,
   validateUpdateReservation,
 } from "../validations/reservation.validations";
 import {
-  validatePagination,
   validateIdParam,
+  validatePagination,
 } from "../validations/shared.validations";
 import { checkAuth } from "../middlewares/checkAuth";
 import { checkRole } from "../middlewares/checkRole";
+import {
+  checkCreateReservationOwnership,
+  checkReservationOwnership,
+  filterReservationsForCustomer,
+} from "../middlewares/checkReservationOwnership";
 
 const router = Router();
 const reservationController = new ReservationController();
@@ -69,12 +75,11 @@ const reservationController = new ReservationController();
  *         description: Erro interno
  */
 router.post(
-  // #TODO: Implementar lógica de criação de reservas do cliente autenticado
-  // (cliente não pode criar reservas em nome de outros clientes)
   "/",
   checkAuth,
   checkRole(["admin", "manager", "attendant", "customer"]),
   validateCreateReservation,
+  checkCreateReservationOwnership,
   (req, res, next) => reservationController.createReservation(req, res, next)
 );
 
@@ -146,11 +151,10 @@ router.post(
  *         description: Erro interno
  */
 router.get(
-  // #TODO: Implementar lógica de recuperação de informaçoes de reservas do cliente autenticado
-  // (cliente não pode recuperar informações de reservas que não são dele)
   "/",
   checkAuth,
   checkRole(["admin", "manager", "attendant", "customer"]),
+  filterReservationsForCustomer,
   validatePagination,
   (req, res, next) => reservationController.getAllReservations(req, res, next)
 );
@@ -239,12 +243,11 @@ router.get(
  *         description: Erro interno
  */
 router.get(
-  // #TODO: Implementar lógica de recuperação de informaçoes de reserva do cliente autenticado
-  // (cliente não pode recuperar informações de uma reserva que não são dele)
   "/:id",
   checkAuth,
   checkRole(["admin", "manager", "attendant", "customer"]),
   validateIdParam,
+  checkReservationOwnership,
   (req, res, next) => reservationController.getReservationById(req, res, next)
 );
 
@@ -306,13 +309,12 @@ router.get(
  *         description: Erro interno
  */
 router.put(
-  // #TODO: Implementar lógica de atualização de reserva do cliente autenticado
-  // (cliente não pode atualizar reservas que não são dele)
   "/:id",
   checkAuth,
   checkRole(["admin", "manager", "attendant", "customer"]),
   validateIdParam,
   validateUpdateReservation,
+  checkReservationOwnership,
   (req, res, next) => reservationController.updateReservation(req, res, next)
 );
 
@@ -345,12 +347,11 @@ router.put(
  *         description: Erro interno
  */
 router.patch(
-  // #TODO: Implementar lógica de cancelamento de reserva do cliente autenticado
-  // (cliente não pode cancelar reservas que não são dele)
   "/:id/cancel",
   checkAuth,
   checkRole(["admin", "manager", "attendant", "customer"]),
   validateIdParam,
+  checkReservationOwnership,
   (req, res, next) => reservationController.cancelReservation(req, res, next)
 );
 

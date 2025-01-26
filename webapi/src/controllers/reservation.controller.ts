@@ -41,6 +41,7 @@ export class ReservationController {
         table_id,
         start_time,
         end_time,
+        customer_id,
       } = req.query as {
         page?: number;
         limit?: number;
@@ -48,6 +49,7 @@ export class ReservationController {
         table_id?: string;
         start_time?: string;
         end_time?: string;
+        customer_id?: string;
       };
 
       const result = await reservationService.getAllReservations(
@@ -56,7 +58,8 @@ export class ReservationController {
         status,
         table_id ? Number(table_id) : undefined,
         start_time,
-        end_time
+        end_time,
+        customer_id ? Number(customer_id) : undefined
       );
 
       res.json(result);
