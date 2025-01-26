@@ -32,8 +32,4 @@ router.post("/login", (req, res, next) =>
   authController.loginCustomer(req, res, next)
 );
 
-// #TODO: Implementar rota de atualização de senha
-
-// #TODO: Implementar rota de recuperação de senha
-
 export default router;
