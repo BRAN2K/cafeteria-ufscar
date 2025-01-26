@@ -1,12 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import createError from "http-errors";
-import db from "../database";
+import { OrderItemService } from "../services/orderItem.service";
+
+const orderItemService = new OrderItemService();
 
 export class OrderItemController {
-  /**
-   * Cria um novo item de pedido
-   * - Recupera o preço atual do produto e armazena em price_at_order_time
-   */
   public async createOrderItem(
     req: Request,
     res: Response,
@@ -14,40 +11,21 @@ export class OrderItemController {
   ) {
     try {
       const { order_id, product_id, quantity } = req.body;
-
-      // Verifica se o pedido existe
-      const order = await db("orders").where({ id: order_id }).first();
-      if (!order) {
-        throw createError.NotFound("Order not found");
-      }
-
-      // Verifica se o produto existe
-      const product = await db("products").where({ id: product_id }).first();
-      if (!product) {
-        throw createError.NotFound("Product not found");
-      }
-
-      // Insere o registro em order_items
-      const [id] = await db("order_items").insert({
+      const orderItemId = await orderItemService.createOrderItem(
         order_id,
         product_id,
-        quantity,
-        price_at_order_time: product.price,
-      });
+        quantity
+      );
 
       res.status(201).json({
         message: "Order item created",
-        orderItemId: id,
+        orderItemId,
       });
     } catch (error) {
       next(error);
     }
   }
 
-  /**
-   * Retorna lista paginada de itens de pedido
-   * - Filtro opcional por order_id para exibir itens de um pedido específico
-   */
   public async getAllOrderItems(
     req: Request,
     res: Response,
@@ -64,32 +42,18 @@ export class OrderItemController {
         order_id?: string;
       };
 
-      const offset = (page - 1) * limit;
-      let query = db("order_items").select("*");
-
-      if (order_id) {
-        query = query.where("order_id", order_id);
-      }
-
-      const [countResult] = await query.clone().count({ total: "*" });
-      const total = Number(countResult.total) || 0;
-
-      const items = await query.limit(limit).offset(offset);
-
-      res.json({
+      const result = await orderItemService.getAllOrderItems(
+        order_id ? Number(order_id) : undefined,
         page,
-        limit,
-        total,
-        data: items,
-      });
+        limit
+      );
+
+      res.json(result);
     } catch (error) {
       next(error);
     }
   }
 
-  /**
-   * Retorna um item de pedido específico pelo ID
-   */
   public async getOrderItemById(
     req: Request,
     res: Response,
@@ -97,11 +61,7 @@ export class OrderItemController {
   ) {
     try {
       const { id } = req.params;
-      const orderItem = await db("order_items").where({ id }).first();
-
-      if (!orderItem) {
-        throw createError.NotFound("Order item not found");
-      }
+      const orderItem = await orderItemService.getOrderItemById(Number(id));
 
       res.json(orderItem);
     } catch (error) {
@@ -109,9 +69,6 @@ export class OrderItemController {
     }
   }
 
-  /**
-   * Remove um item de pedido pelo ID
-   */
   public async deleteOrderItem(
     req: Request,
     res: Response,
@@ -119,11 +76,7 @@ export class OrderItemController {
   ) {
     try {
       const { id } = req.params;
-      const deleted = await db("order_items").where({ id }).del();
-
-      if (!deleted) {
-        throw createError.NotFound("Order item not found");
-      }
+      await orderItemService.deleteOrderItem(Number(id));
 
       res.json({ message: "Order item deleted" });
     } catch (error) {

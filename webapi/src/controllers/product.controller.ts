@@ -1,12 +1,13 @@
 import { NextFunction, Request, Response } from "express";
-import createError from "http-errors";
-import db from "../database";
+import { ProductService } from "../services/product.service";
+
+const productService = new ProductService();
 
 export class ProductController {
   public async createProduct(req: Request, res: Response, next: NextFunction) {
     try {
       const { name, description, price, stock_quantity } = req.body;
-      const [id] = await db("products").insert({
+      const productId = await productService.createProduct({
         name,
         description,
         price,
@@ -15,7 +16,7 @@ export class ProductController {
 
       res.status(201).json({
         message: "Product created",
-        productId: id,
+        productId,
       });
     } catch (error) {
       next(error);
@@ -33,25 +34,9 @@ export class ProductController {
         limit?: number;
         search?: string;
       };
+      const result = await productService.getAllProducts(page, limit, search);
 
-      const offset = (page - 1) * limit;
-      let query = db("products");
-
-      if (search) {
-        query = query.where("name", "like", `%${search}%`);
-      }
-
-      const [countResult] = await query.clone().count({ total: "*" });
-      const total = Number(countResult.total) || 0;
-
-      const products = await query.select("*").limit(limit).offset(offset);
-
-      res.json({
-        page,
-        limit,
-        total,
-        data: products,
-      });
+      res.json(result);
     } catch (error) {
       next(error);
     }
@@ -60,11 +45,7 @@ export class ProductController {
   public async getProductById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const product = await db("products").where({ id }).first();
-
-      if (!product) {
-        throw createError.NotFound("Product not found");
-      }
+      const product = await productService.getProductById(Number(id));
 
       res.json(product);
     } catch (error) {
@@ -76,14 +57,12 @@ export class ProductController {
     try {
       const { id } = req.params;
       const { name, description, price, stock_quantity } = req.body;
-
-      const updatedCount = await db("products")
-        .where({ id })
-        .update({ name, description, price, stock_quantity });
-
-      if (!updatedCount) {
-        throw createError.NotFound("Product not found");
-      }
+      await productService.updateProduct(Number(id), {
+        name,
+        description,
+        price,
+        stock_quantity,
+      });
 
       res.json({ message: "Product updated" });
     } catch (error) {
@@ -94,11 +73,7 @@ export class ProductController {
   public async deleteProduct(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const deleted = await db("products").where({ id }).del();
-
-      if (!deleted) {
-        throw createError.NotFound("Product not found");
-      }
+      await productService.deleteProduct(Number(id));
 
       res.json({ message: "Product deleted" });
     } catch (error) {
@@ -110,13 +85,7 @@ export class ProductController {
     try {
       const { id } = req.params;
       const { quantity } = req.body;
-
-      const product = await db("products").where({ id }).first();
-      if (!product) {
-        throw createError.NotFound("Product not found");
-      }
-
-      await db("products").where({ id }).increment("stock_quantity", quantity);
+      await productService.increaseStock(Number(id), quantity);
 
       res.json({
         message: `Stock increased by ${quantity}`,
@@ -130,17 +99,7 @@ export class ProductController {
     try {
       const { id } = req.params;
       const { quantity } = req.body;
-
-      const product = await db("products").where({ id }).first();
-      if (!product) {
-        throw createError.NotFound("Product not found");
-      }
-
-      if (product.stock_quantity - quantity < 0) {
-        throw createError.BadRequest("Not enough stock to decrease");
-      }
-
-      await db("products").where({ id }).decrement("stock_quantity", quantity);
+      await productService.decreaseStock(Number(id), quantity);
 
       res.json({
         message: `Stock decreased by ${quantity}`,

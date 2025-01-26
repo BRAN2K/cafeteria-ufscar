@@ -1,26 +1,22 @@
 import { NextFunction, Request, Response } from "express";
-import createError from "http-errors";
-import bcrypt from "bcrypt";
-import db from "../database";
+import { EmployeeService } from "../services/employee.service";
+
+const employeeService = new EmployeeService();
 
 export class EmployeeController {
   public async createEmployee(req: Request, res: Response, next: NextFunction) {
     try {
       const { name, email, role, password } = req.body;
-
-      const saltRounds = 10;
-      const passwordHash = await bcrypt.hash(password, saltRounds);
-
-      const [id] = await db("employees").insert({
+      const employeeId = await employeeService.createEmployee({
         name,
         email,
         role,
-        password: passwordHash,
+        password,
       });
 
       res.status(201).json({
         message: "Employee created",
-        employeeId: id,
+        employeeId,
       });
     } catch (error) {
       next(error);
@@ -42,25 +38,9 @@ export class EmployeeController {
         limit?: number;
         search?: string;
       };
+      const result = await employeeService.getAllEmployees(page, limit, search);
 
-      const offset = (page - 1) * limit;
-      let query = db("employees");
-
-      if (search) {
-        query = query.where("name", "like", `%${search}%`);
-      }
-
-      const [countResult] = await query.clone().count({ total: "*" });
-      const total = Number(countResult.total) || 0;
-
-      const employees = await query.select("*").limit(limit).offset(offset);
-
-      res.json({
-        page,
-        limit,
-        total,
-        data: employees,
-      });
+      res.json(result);
     } catch (error) {
       next(error);
     }
@@ -73,11 +53,7 @@ export class EmployeeController {
   ) {
     try {
       const { id } = req.params;
-      const employee = await db("employees").where({ id }).first();
-
-      if (!employee) {
-        throw createError.NotFound("Employee not found");
-      }
+      const employee = await employeeService.getEmployeeById(Number(id));
 
       res.json(employee);
     } catch (error) {
@@ -89,14 +65,11 @@ export class EmployeeController {
     try {
       const { id } = req.params;
       const { name, email, role } = req.body;
-
-      const updatedCount = await db("employees")
-        .where({ id })
-        .update({ name, email, role });
-
-      if (!updatedCount) {
-        throw createError.NotFound("Employee not found");
-      }
+      await employeeService.updateEmployee(Number(id), {
+        name,
+        email,
+        role,
+      });
 
       res.json({ message: "Employee updated" });
     } catch (error) {
@@ -107,11 +80,7 @@ export class EmployeeController {
   public async deleteEmployee(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const deleted = await db("employees").where({ id }).del();
-
-      if (!deleted) {
-        throw createError.NotFound("Employee not found");
-      }
+      await employeeService.deleteEmployee(Number(id));
 
       res.json({ message: "Employee deleted" });
     } catch (error) {

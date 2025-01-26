@@ -1,26 +1,22 @@
 import { NextFunction, Request, Response } from "express";
-import createError from "http-errors";
-import bcrypt from "bcrypt";
-import db from "../database";
+import { CustomerService } from "../services/customer.service";
+
+const customerService = new CustomerService();
 
 export class CustomerController {
   public async createCustomer(req: Request, res: Response, next: NextFunction) {
     try {
       const { name, email, phone, password } = req.body;
-
-      const saltRounds = 10;
-      const passwordHash = await bcrypt.hash(password, saltRounds);
-
-      const [id] = await db("customers").insert({
+      const customerId = await customerService.createCustomer({
         name,
         email,
         phone,
-        password: passwordHash,
+        password,
       });
 
       res.status(201).json({
         message: "Customer created",
-        customerId: id,
+        customerId,
       });
     } catch (error) {
       next(error);
@@ -42,29 +38,9 @@ export class CustomerController {
         limit?: number;
         search?: string;
       };
+      const result = await customerService.getAllCustomers(page, limit, search);
 
-      const offset = (page - 1) * limit;
-      let query = db("customers");
-
-      if (search) {
-        query = query.where((builder) => {
-          builder
-            .where("name", "like", `%${search}%`)
-            .orWhere("email", "like", `%${search}%`);
-        });
-      }
-
-      const [countResult] = await query.clone().count({ total: "*" });
-      const total = Number(countResult.total) || 0;
-
-      const customers = await query.select("*").limit(limit).offset(offset);
-
-      res.json({
-        page,
-        limit,
-        total,
-        data: customers,
-      });
+      res.json(result);
     } catch (error) {
       next(error);
     }
@@ -77,11 +53,7 @@ export class CustomerController {
   ) {
     try {
       const { id } = req.params;
-      const customer = await db("customers").where({ id }).first();
-
-      if (!customer) {
-        throw createError.NotFound("Customer not found");
-      }
+      const customer = await customerService.getCustomerById(Number(id));
 
       res.json(customer);
     } catch (error) {
@@ -93,14 +65,7 @@ export class CustomerController {
     try {
       const { id } = req.params;
       const { name, email, phone } = req.body;
-
-      const updatedCount = await db("customers")
-        .where({ id })
-        .update({ name, email, phone });
-
-      if (!updatedCount) {
-        throw createError.NotFound("Customer not found");
-      }
+      await customerService.updateCustomer(Number(id), { name, email, phone });
 
       res.json({ message: "Customer updated" });
     } catch (error) {
@@ -111,11 +76,7 @@ export class CustomerController {
   public async deleteCustomer(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const deleted = await db("customers").where({ id }).del();
-
-      if (!deleted) {
-        throw createError.NotFound("Customer not found");
-      }
+      await customerService.deleteCustomer(Number(id));
 
       res.json({ message: "Customer deleted" });
     } catch (error) {

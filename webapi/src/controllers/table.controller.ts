@@ -1,12 +1,13 @@
 import { NextFunction, Request, Response } from "express";
-import createError from "http-errors";
-import db from "../database";
+import { TableService } from "../services/table.service";
+
+const tableService = new TableService();
 
 export class TableController {
   public async createTable(req: Request, res: Response, next: NextFunction) {
     try {
       const { table_number, capacity, status } = req.body;
-      const [id] = await db("tables").insert({
+      const tableId = await tableService.createTable({
         table_number,
         capacity,
         status,
@@ -14,7 +15,7 @@ export class TableController {
 
       res.status(201).json({
         message: "Table created",
-        tableId: id,
+        tableId,
       });
     } catch (error) {
       next(error);
@@ -32,26 +33,9 @@ export class TableController {
         limit?: number;
         search?: string;
       };
+      const result = await tableService.getAllTables(page, limit, search);
 
-      const offset = (page - 1) * limit;
-      let query = db("tables");
-
-      // Se quiser filtrar por status ou outro campo, use “search”
-      if (search) {
-        query = query.where("status", "like", `%${search}%`);
-      }
-
-      const [countResult] = await query.clone().count({ total: "*" });
-      const total = Number(countResult.total) || 0;
-
-      const tables = await query.select("*").limit(limit).offset(offset);
-
-      res.json({
-        page,
-        limit,
-        total,
-        data: tables,
-      });
+      res.json(result);
     } catch (error) {
       next(error);
     }
@@ -60,11 +44,7 @@ export class TableController {
   public async getTableById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const table = await db("tables").where({ id }).first();
-
-      if (!table) {
-        throw createError.NotFound("Table not found");
-      }
+      const table = await tableService.getTableById(Number(id));
 
       res.json(table);
     } catch (error) {
@@ -76,14 +56,11 @@ export class TableController {
     try {
       const { id } = req.params;
       const { table_number, capacity, status } = req.body;
-
-      const updatedCount = await db("tables")
-        .where({ id })
-        .update({ table_number, capacity, status });
-
-      if (!updatedCount) {
-        throw createError.NotFound("Table not found");
-      }
+      await tableService.updateTable(Number(id), {
+        table_number,
+        capacity,
+        status,
+      });
 
       res.json({ message: "Table updated" });
     } catch (error) {
@@ -94,11 +71,7 @@ export class TableController {
   public async deleteTable(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const deleted = await db("tables").where({ id }).del();
-
-      if (!deleted) {
-        throw createError.NotFound("Table not found");
-      }
+      await tableService.deleteTable(Number(id));
 
       res.json({ message: "Table deleted" });
     } catch (error) {
