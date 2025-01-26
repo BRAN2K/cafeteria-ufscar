@@ -10,6 +10,7 @@ import {
 } from "../validations/shared.validations";
 import { checkAuth } from "../middlewares/checkAuth";
 import { checkRole } from "../middlewares/checkRole";
+import { checkCustomerOwnership } from "../middlewares/checkCustomerOwnership";
 
 const router = Router();
 const customerController = new CustomerController();
@@ -152,12 +153,11 @@ router.get(
  *         description: Erro interno do servidor
  */
 router.get(
-  // #TODO: Implementar lógica de recuperar dados do cliente autenticado
-  // (cliente não pode recuperar dados de outro cliente que não seja ele próprio)
   "/:id",
   checkAuth,
   checkRole(["admin", "customer"]),
   validateIdParam,
+  checkCustomerOwnership,
   (req, res, next) => customerController.getCustomerById(req, res, next)
 );
 
@@ -209,12 +209,11 @@ router.get(
  *         description: Erro interno
  */
 router.put(
-  // #TODO: Implementar lógica de atualizar dados do cliente autenticado
-  // (cliente não pode atualizar dados de outro cliente que não seja ele próprio)
   "/:id",
   checkAuth,
   checkRole(["admin", "customer"]),
   validateIdParam,
+  checkCustomerOwnership,
   validateUpdateCustomer,
   (req, res, next) => customerController.updateCustomer(req, res, next)
 );
@@ -250,12 +249,11 @@ router.put(
  *         description: Erro interno
  */
 router.delete(
-  // #TODO: Implementar lógica de deletar dados do cliente autenticado
-  // (cliente não pode deletar dados de outro cliente que não seja ele próprio)
   "/:id",
   checkAuth,
   checkRole(["admin", "customer"]),
   validateIdParam,
+  checkCustomerOwnership,
   (req, res, next) => customerController.deleteCustomer(req, res, next)
 );
 
