@@ -1,4 +1,3 @@
-// src/components/Layout/MainLayout.tsx
 import { useState } from "react";
 import {
   Box,

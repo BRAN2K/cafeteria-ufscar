@@ -7,6 +7,8 @@ import { Unauthorized } from "./pages/Unauthorized";
 import { MainLayout } from "./components/Layout/MainLayout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useAuth } from "./contexts/AuthContext";
+import { Products } from "./pages/Products";
+import { ProductForm } from "./pages/Products/ProductForm";
 
 export function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -39,6 +41,40 @@ export function AppRoutes() {
           <ProtectedRoute>
             <MainLayout>
               <Dashboard />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Rotas protegidas - Produtos */}
+      <Route
+        path="/products"
+        element={
+          <ProtectedRoute allowedRoles={["admin", "manager"]}>
+            <MainLayout>
+              <Products />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/products/new"
+        element={
+          <ProtectedRoute allowedRoles={["admin", "manager"]}>
+            <MainLayout>
+              <ProductForm />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/products/:id"
+        element={
+          <ProtectedRoute allowedRoles={["admin", "manager"]}>
+            <MainLayout>
+              <ProductForm />
             </MainLayout>
           </ProtectedRoute>
         }
