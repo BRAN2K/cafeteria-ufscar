@@ -1,10 +1,10 @@
 // src/components/Layout/MainLayout.tsx
+import { useState } from "react";
 import {
   Box,
   AppBar,
   Toolbar,
   Typography,
-  Button,
   IconButton,
   Drawer,
   List,
@@ -13,6 +13,9 @@ import {
   ListItemText,
   ListItemButton,
   Avatar,
+  Menu,
+  MenuItem,
+  Divider,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -21,13 +24,14 @@ import {
   Restaurant,
   Event,
   Inventory,
+  Logout,
 } from "@mui/icons-material";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 
 export function MainLayout({ children }: { children: React.ReactNode }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { logout, user } = useAuth();
   const navigate = useNavigate();
 
@@ -39,7 +43,16 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
     { text: "Estoque", icon: <Inventory />, path: "/inventory" },
   ];
 
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorEl(null);
+  };
+
   const handleLogout = () => {
+    handleCloseUserMenu();
     logout();
     navigate("/login");
   };
@@ -55,7 +68,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh" }}>
+    <Box sx={{ display: "flex" }}>
       <AppBar position="fixed">
         <Toolbar>
           <IconButton
@@ -71,24 +84,54 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
           </Typography>
 
           {/* Área do usuário */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <Avatar sx={{ bgcolor: "secondary.main", width: 32, height: 32 }}>
-              {user?.name ? getInitials(user.name) : "?"}
-            </Avatar>
-            <Typography variant="body2" sx={{ mr: 2 }}>
-              {user?.name || "Usuário"}
-            </Typography>
-            <Button
-              color="inherit"
-              onClick={handleLogout}
-              sx={{
-                "&:hover": {
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
-                },
-              }}
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <IconButton
+              onClick={handleOpenUserMenu}
+              sx={{ p: 0, "&:hover": { opacity: 0.8 } }}
             >
-              Sair
-            </Button>
+              <Avatar sx={{ bgcolor: "secondary.main", width: 32, height: 32 }}>
+                {user?.name ? getInitials(user.name) : "?"}
+              </Avatar>
+            </IconButton>
+
+            <Menu
+              sx={{ mt: "45px" }}
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorEl)}
+              onClose={handleCloseUserMenu}
+            >
+              <Box sx={{ px: 2, py: 1 }}>
+                <Typography variant="subtitle1" noWrap>
+                  {user?.name}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" noWrap>
+                  {user?.role === "admin"
+                    ? "Administrador"
+                    : user?.role === "manager"
+                    ? "Gerente"
+                    : user?.role === "attendant"
+                    ? "Atendente"
+                    : "Cliente"}
+                </Typography>
+              </Box>
+              <Divider />
+              <MenuItem onClick={handleLogout}>
+                <ListItemIcon>
+                  <Logout fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Sair</ListItemText>
+              </MenuItem>
+            </Menu>
           </Box>
         </Toolbar>
       </AppBar>
@@ -114,10 +157,10 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
               {user?.name ? getInitials(user.name) : "?"}
             </Avatar>
             <Box>
-              <Typography variant="subtitle1">
-                {user?.name || "Usuário"}
+              <Typography variant="subtitle1" noWrap>
+                {user?.name}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" noWrap>
                 {user?.role === "admin"
                   ? "Administrador"
                   : user?.role === "manager"
