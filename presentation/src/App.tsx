@@ -1,10 +1,12 @@
-// src/App.tsx
 import { BrowserRouter } from "react-router-dom";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppRoutes } from "./routes";
 import { AuthProvider } from "./contexts/AuthContext";
 import { GlobalStyles } from "./components/Layout/GlobalStyles";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
+import { ptBR } from "date-fns/locale/pt-BR";
 
 const theme = createTheme({
   palette: {
@@ -24,12 +26,14 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
         <GlobalStyles />
-        <CssBaseline />
-        <BrowserRouter>
-          <AuthProvider>
-            <AppRoutes />
-          </AuthProvider>
-        </BrowserRouter>
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
+          <CssBaseline />
+          <BrowserRouter>
+            <AuthProvider>
+              <AppRoutes />
+            </AuthProvider>
+          </BrowserRouter>
+        </LocalizationProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

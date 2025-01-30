@@ -1,4 +1,3 @@
-// src/routes.tsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import { CustomerLogin } from "./pages/Login/CustomerLogin";
 import { EmployeeLogin } from "./pages/Login/EmployeeLogin";
@@ -9,6 +8,8 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useAuth } from "./contexts/AuthContext";
 import { Products } from "./pages/Products";
 import { ProductForm } from "./pages/Products/ProductForm";
+import { Reservations } from "./pages/Reservations";
+import { ReservationForm } from "./pages/Reservations/ReservationForm";
 
 export function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -75,6 +76,40 @@ export function AppRoutes() {
           <ProtectedRoute allowedRoles={["admin", "manager"]}>
             <MainLayout>
               <ProductForm />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Rotas protegidas - Rotas de Reservas */}
+      <Route
+        path="/reservations"
+        element={
+          <ProtectedRoute allowedRoles={["admin", "manager", "attendant"]}>
+            <MainLayout>
+              <Reservations />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/reservations/new"
+        element={
+          <ProtectedRoute allowedRoles={["admin", "manager", "attendant"]}>
+            <MainLayout>
+              <ReservationForm />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/reservations/:id"
+        element={
+          <ProtectedRoute allowedRoles={["admin", "manager", "attendant"]}>
+            <MainLayout>
+              <ReservationForm />
             </MainLayout>
           </ProtectedRoute>
         }
