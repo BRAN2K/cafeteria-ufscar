@@ -1,4 +1,3 @@
-// src/pages/Products/index.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -118,7 +117,6 @@ export function Products() {
                 <SearchIcon />
               </InputAdornment>
             ),
-            // src/pages/Products/index.tsx (continuação)
           }}
         />
       </Paper>

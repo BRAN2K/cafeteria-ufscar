@@ -1,4 +1,3 @@
-// src/hooks/useToast.tsx
 import { useState } from "react";
 import { Snackbar, Alert, AlertColor } from "@mui/material";
 

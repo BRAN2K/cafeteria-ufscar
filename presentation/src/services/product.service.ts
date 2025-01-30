@@ -1,4 +1,3 @@
-// src/services/product.service.ts
 import api from "./api";
 
 export interface Product {

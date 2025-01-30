@@ -1,4 +1,3 @@
-// src/pages/Login/index.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -14,7 +13,6 @@ import {
 import { authService } from "../../services/auth.service";
 import { useAuth } from "../../contexts/AuthContext";
 
-// src/pages/Login/index.tsx (continuação)
 export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

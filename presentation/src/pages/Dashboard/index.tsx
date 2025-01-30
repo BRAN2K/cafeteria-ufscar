@@ -1,4 +1,3 @@
-// src/pages/Dashboard/index.tsx
 import { useEffect, useState } from "react";
 import { Paper, Typography, Box } from "@mui/material";
 import { useAuth } from "../../contexts/AuthContext";

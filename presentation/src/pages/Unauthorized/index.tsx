@@ -1,4 +1,3 @@
-// src/pages/Unauthorized/index.tsx
 import { Box, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";

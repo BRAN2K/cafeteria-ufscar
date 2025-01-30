@@ -39,7 +39,6 @@ export function StockAdjustment({
       if (type === "increase") {
         return productService.increaseStock(productId, qty);
       }
-      // src/pages/Products/StockAdjustment.tsx (continuação)
       return productService.decreaseStock(productId, qty);
     },
     onSuccess: () => {

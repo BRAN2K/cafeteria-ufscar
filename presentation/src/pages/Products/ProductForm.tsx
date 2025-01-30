@@ -1,4 +1,3 @@
-// src/pages/Products/ProductForm.tsx
 import { useState, useEffect } from "react";
 import { Box, Paper, TextField, Button, Grid, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
@@ -119,7 +118,6 @@ export function ProductForm() {
 
             <Grid item xs={12} md={6}>
               <TextField
-                // src/pages/Products/ProductForm.tsx (continuação)
                 fullWidth
                 label="Preço"
                 type="number"
