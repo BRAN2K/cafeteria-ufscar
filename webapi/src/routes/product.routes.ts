@@ -307,7 +307,7 @@ router.delete(
 router.post(
   "/:id/increase",
   checkAuth,
-  checkRole(["admin, manager"]),
+  checkRole(["admin", "manager"]),
   validateIdParam,
   validateStockAdjustment,
   (req, res, next) => productController.increaseStock(req, res, next)
@@ -359,7 +359,7 @@ router.post(
 router.post(
   "/:id/decrease",
   checkAuth,
-  checkRole(["admin, manager"]),
+  checkRole(["admin", "manager"]),
   validateIdParam,
   validateStockAdjustment,
   (req, res, next) => productController.decreaseStock(req, res, next)

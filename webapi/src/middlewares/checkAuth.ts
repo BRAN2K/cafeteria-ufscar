@@ -18,20 +18,17 @@ export function checkAuth(req: Request, res: Response, next: NextFunction) {
     if (!authHeader) {
       throw createError.Unauthorized("No token provided");
     }
-    console.log("tem token");
 
     const parts = authHeader.split(" ");
     if (parts.length !== 2) {
       throw createError.Unauthorized("Token error");
     }
-    console.log("tem 2 partes");
 
     const [scheme, token] = parts;
 
     if (!/^Bearer$/i.test(scheme)) {
       throw createError.Unauthorized("Malformed token");
     }
-    console.log("é bearer");
 
     let decoded: JwtPayload;
     try {
