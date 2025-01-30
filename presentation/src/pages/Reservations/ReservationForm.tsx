@@ -24,6 +24,7 @@ import { customerService } from "../../services/customer.service";
 import { useAvailableSlots } from "../../hooks/useAvailableSlots";
 import { useToast } from "../../hooks/useToast";
 import { ReservationStatus } from "../../services/reservation.service";
+import { LoadingButton } from "../../components/LoadingButton";
 
 interface ReservationFormData {
   table_id: string;
@@ -44,6 +45,7 @@ export function ReservationForm() {
   const navigate = useNavigate();
   const { showToast, ToastComponent } = useToast();
   const [activeStep, setActiveStep] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState<ReservationFormData>({
     table_id: "",
@@ -129,14 +131,36 @@ export function ReservationForm() {
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Se não estiver no último passo, apenas avança
+    if (activeStep !== steps.length - 1) {
+      handleNext();
+      return;
+    }
 
     if (!validateForm()) {
       return;
     }
 
-    mutation.mutate(formData);
+    setIsSubmitting(true);
+
+    try {
+      await mutation.mutateAsync(formData);
+      showToast(
+        id ? "Reserva atualizada com sucesso" : "Reserva criada com sucesso",
+        "success"
+      );
+      navigate("/reservations");
+    } catch {
+      showToast(
+        id ? "Erro ao atualizar reserva" : "Erro ao criar reserva",
+        "error"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const validateForm = (): boolean => {
@@ -509,26 +533,36 @@ export function ReservationForm() {
             <Button
               variant="outlined"
               onClick={() => navigate("/reservations")}
+              disabled={isSubmitting}
             >
               Cancelar
             </Button>
 
             {activeStep > 0 && (
-              <Button variant="outlined" onClick={handleBack}>
+              <Button
+                variant="outlined"
+                onClick={handleBack}
+                disabled={isSubmitting}
+              >
                 Voltar
               </Button>
             )}
 
             {activeStep === steps.length - 1 ? (
-              <Button
+              <LoadingButton
                 type="submit"
                 variant="contained"
-                disabled={mutation.isPending}
+                loading={isSubmitting}
+                disabled={isSubmitting}
               >
-                {mutation.isPending ? "Salvando..." : "Confirmar Reserva"}
-              </Button>
+                Confirmar Reserva
+              </LoadingButton>
             ) : (
-              <Button variant="contained" onClick={handleNext}>
+              <Button
+                variant="contained"
+                onClick={handleNext}
+                disabled={isSubmitting}
+              >
                 Próximo
               </Button>
             )}
