@@ -7,6 +7,7 @@ dotenv.config({
 
 export const PORT = process.env.API_PORT || "3000";
 export const NODE_ENV = process.env.NODE_ENV || "development";
+export const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 
 export const DB_HOST = process.env.DB_HOST || "localhost";
 export const DB_PORT = process.env.DB_PORT || "3308";

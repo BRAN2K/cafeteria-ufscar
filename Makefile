@@ -19,8 +19,7 @@ export FRONTEND_PORT
 .PHONY: dev-front dev-back up down build logs db-up db-down migrate-latest migrate-rollback migrate-create
 
 dev-front:
-	cd presentation
-	npm run dev
+	cd presentation && npm run dev
 
 dev-back:
 	cd webapi && npm run dev
