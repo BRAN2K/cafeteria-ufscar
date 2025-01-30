@@ -12,6 +12,7 @@ import {
   ListItemIcon,
   ListItemText,
   ListItemButton,
+  Avatar,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -43,8 +44,18 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
     navigate("/login");
   };
 
+  // Função para obter as iniciais do nome
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", minHeight: "100vh" }}>
       <AppBar position="fixed">
         <Toolbar>
           <IconButton
@@ -58,12 +69,27 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Cafeteria UFSCar
           </Typography>
-          <Typography variant="body2" sx={{ mr: 2 }}>
-            {user?.email}
-          </Typography>
-          <Button color="inherit" onClick={handleLogout}>
-            Sair
-          </Button>
+
+          {/* Área do usuário */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <Avatar sx={{ bgcolor: "secondary.main", width: 32, height: 32 }}>
+              {user?.name ? getInitials(user.name) : "?"}
+            </Avatar>
+            <Typography variant="body2" sx={{ mr: 2 }}>
+              {user?.name || "Usuário"}
+            </Typography>
+            <Button
+              color="inherit"
+              onClick={handleLogout}
+              sx={{
+                "&:hover": {
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                },
+              }}
+            >
+              Sair
+            </Button>
+          </Box>
         </Toolbar>
       </AppBar>
 
@@ -72,21 +98,54 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
       >
-        <List sx={{ width: 250 }}>
-          {menuItems.map((item) => (
-            <ListItem key={item.text} disablePadding>
-              <ListItemButton
-                onClick={() => {
-                  navigate(item.path);
-                  setDrawerOpen(false);
-                }}
-              >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+        <Box sx={{ width: 250 }}>
+          {/* Cabeçalho do Drawer */}
+          <Box
+            sx={{
+              p: 2,
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              borderBottom: 1,
+              borderColor: "divider",
+            }}
+          >
+            <Avatar sx={{ bgcolor: "primary.main" }}>
+              {user?.name ? getInitials(user.name) : "?"}
+            </Avatar>
+            <Box>
+              <Typography variant="subtitle1">
+                {user?.name || "Usuário"}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {user?.role === "admin"
+                  ? "Administrador"
+                  : user?.role === "manager"
+                  ? "Gerente"
+                  : user?.role === "attendant"
+                  ? "Atendente"
+                  : "Cliente"}
+              </Typography>
+            </Box>
+          </Box>
+
+          {/* Lista de Menu */}
+          <List>
+            {menuItems.map((item) => (
+              <ListItem key={item.text} disablePadding>
+                <ListItemButton
+                  onClick={() => {
+                    navigate(item.path);
+                    setDrawerOpen(false);
+                  }}
+                >
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.text} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
       </Drawer>
 
       <Box
@@ -97,6 +156,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
           mt: 8,
           backgroundColor: (theme) => theme.palette.grey[100],
           minHeight: "100vh",
+          width: "100%",
         }}
       >
         {children}

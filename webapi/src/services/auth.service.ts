@@ -27,6 +27,7 @@ export class AuthService {
       {
         sub: employee.id,
         email: employee.email,
+        name: employee.name,
         role: employee.role,
         userType: "employee",
       },
@@ -55,6 +56,7 @@ export class AuthService {
       {
         sub: customer.id,
         email: customer.email,
+        name: customer.name,
         role: "customer",
         userType: "customer",
       },

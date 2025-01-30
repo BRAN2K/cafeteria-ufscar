@@ -1,3 +1,4 @@
+// src/contexts/AuthContext.tsx
 import {
   createContext,
   useContext,
@@ -5,10 +6,9 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import { User } from "../types/auth";
 import { jwtDecode } from "jwt-decode";
+import { User } from "../types/auth";
 
-// Definindo o tipo do contexto
 interface AuthContextType {
   user: User | null;
   login: (token: string) => void;
@@ -16,29 +16,35 @@ interface AuthContextType {
   isAuthenticated: boolean;
 }
 
-// Criando o contexto com o tipo definido e valor inicial undefined
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
-// Componente Provider
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
+  const [user, setUser] = useState<User | null>(() => {
+    // Inicialização lazy do estado
     const token = localStorage.getItem("token");
     if (token) {
       try {
         const decoded = jwtDecode<User>(token);
-        setUser(decoded);
+
+        // Verifica se o token expirou
+        const currentTime = Date.now() / 1000;
+        if (decoded.exp && decoded.exp < currentTime) {
+          localStorage.removeItem("token");
+          return null;
+        }
+
+        return decoded;
       } catch {
         localStorage.removeItem("token");
-        setUser(null);
+        return null;
       }
     }
-  }, []);
+    return null;
+  });
 
   const login = (token: string) => {
     localStorage.setItem("token", token);
@@ -51,6 +57,47 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(null);
   };
 
+  // Verificar token periodicamente
+  useEffect(() => {
+    const checkToken = () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const decoded = jwtDecode<User>(token);
+          const currentTime = Date.now() / 1000;
+
+          if (decoded.exp && decoded.exp < currentTime) {
+            logout();
+          }
+        } catch {
+          logout();
+        }
+      }
+    };
+
+    // Verifica a cada minuto
+    const interval = setInterval(checkToken, 60000);
+
+    // Adiciona listener para storage events
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "token") {
+        if (e.newValue) {
+          const decoded = jwtDecode<User>(e.newValue);
+          setUser(decoded);
+        } else {
+          setUser(null);
+        }
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
   const value = {
     user,
     login,
@@ -61,7 +108,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// Hook personalizado para usar o contexto
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
   if (context === undefined) {

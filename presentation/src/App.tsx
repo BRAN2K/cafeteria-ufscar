@@ -4,6 +4,7 @@ import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppRoutes } from "./routes";
 import { AuthProvider } from "./contexts/AuthContext";
+import { GlobalStyles } from "./components/Layout/GlobalStyles";
 
 const theme = createTheme({
   palette: {
@@ -22,6 +23,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
+        <GlobalStyles />
         <CssBaseline />
         <BrowserRouter>
           <AuthProvider>
