@@ -9,14 +9,8 @@ export interface Reservation {
   start_time: string;
   end_time: string;
   status: ReservationStatus;
-  table?: {
-    table_number: number;
-    capacity: number;
-  };
-  customer?: {
-    name: string;
-    email: string;
-  };
+  customer_name?: string;
+  customer_email?: string;
 }
 
 export interface ReservationResponse {

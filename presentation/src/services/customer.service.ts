@@ -21,4 +21,9 @@ export const customerService = {
     });
     return data;
   },
+
+  async getCustomerById(id: number): Promise<Customer> {
+    const { data } = await api.get(`/customers/${id}`);
+    return data;
+  },
 };

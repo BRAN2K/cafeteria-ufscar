@@ -29,4 +29,10 @@
  *           type: string
  *           format: date-time
  *           description: Data/hora em que a reserva foi criada
+ *         customer_name:
+ *           type: string
+ *           description: Nome do cliente que realizou a reserva
+ *         customer_email:
+ *           type: string
+ *           description: E-mail do cliente que realizou a reserva
  */

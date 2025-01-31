@@ -120,37 +120,44 @@ export class ReservationService {
     records: any[];
   }> {
     const offset = (page - 1) * limit;
-    let query = db("reservations").whereNotNull("id");
+    let query = db("reservations");
 
     if (status) {
-      query = query.where("status", status);
+      query = query.where("reservations.status", status);
     }
     if (table_id) {
-      query = query.where("table_id", table_id);
+      query = query.where("reservations.table_id", table_id);
     }
     if (start_time && end_time) {
       query = query.where((builder) => {
         builder
-          .where("start_time", ">=", start_time)
-          .andWhere("end_time", "<=", end_time);
+          .where("reservations.start_time", ">=", start_time)
+          .andWhere("reservations.end_time", "<=", end_time);
       });
     } else if (start_time) {
-      query = query.where("end_time", ">=", start_time);
+      query = query.where("reservations.end_time", ">=", start_time);
     } else if (end_time) {
-      query = query.where("start_time", "<=", end_time);
+      query = query.where("reservations.start_time", "<=", end_time);
     }
     if (customer_id) {
-      query = query.where("customer_id", customer_id);
+      query = query.where("reservations.customer_id", customer_id);
     }
-
     const [countResult] = await query.clone().count({ total: "*" });
+
+    query = query
+      .join("customers", "reservations.customer_id", "customers.id")
+      .select(
+        "reservations.*",
+        "customers.name as customer_name",
+        "customers.email as customer_email"
+      );
+
     const total = Number(countResult.total) || 0;
 
     const records = await query
-      .select("*")
+      .orderBy("reservations.start_time", "asc")
       .limit(limit)
-      .offset(offset)
-      .orderBy("start_time", "asc");
+      .offset(offset);
 
     return {
       page,
@@ -159,7 +166,6 @@ export class ReservationService {
       records,
     };
   }
-
   public async getReservationById(id: number): Promise<any> {
     const reservation = await db("reservations").where({ id }).first();
 

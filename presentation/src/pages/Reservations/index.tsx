@@ -19,6 +19,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Typography,
 } from "@mui/material";
 import { Edit as EditIcon, Cancel as CancelIcon } from "@mui/icons-material";
 import { useQuery } from "@tanstack/react-query";
@@ -37,7 +38,6 @@ export function Reservations() {
   const [cancelId, setCancelId] = useState<number | null>(null);
   const { showToast, ToastComponent } = useToast();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [filters, setFilters] = useState({
     status: "",
     start_time: "",
@@ -192,13 +192,24 @@ export function Reservations() {
           <TableBody>
             {data?.records.map((reservation) => (
               <TableRow key={reservation.id}>
-                <TableCell>Mesa {reservation.table?.table_number}</TableCell>
-                <TableCell>{reservation.customer?.name}</TableCell>
+                <TableCell>Mesa {reservation.table_id}</TableCell>
+                <TableCell>
+                  <Box>
+                    <Typography variant="body2">
+                      {reservation.customer_name}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {reservation.customer_email}
+                    </Typography>
+                  </Box>
+                </TableCell>
                 <TableCell>
                   {format(
                     new Date(reservation.start_time),
                     "dd/MM/yyyy HH:mm",
-                    { locale: ptBR }
+                    {
+                      locale: ptBR,
+                    }
                   )}
                 </TableCell>
                 <TableCell>

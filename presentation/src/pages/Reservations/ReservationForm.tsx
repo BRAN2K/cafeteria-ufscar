@@ -416,7 +416,11 @@ export function ReservationForm() {
           </Box>
         );
 
-      case 3: // Confirmação
+      case 3: {
+        const selectedCustomer = customersResponse?.data?.find(
+          (customer) => customer.id === parseInt(formData.customer_id)
+        );
+
         return (
           <Box>
             <Typography variant="h6" gutterBottom>
@@ -474,36 +478,26 @@ export function ReservationForm() {
                   )}
                 </Paper>
               </Grid>
+
               <Grid item xs={12}>
                 <Paper sx={{ p: 2 }}>
                   <Typography variant="subtitle1" gutterBottom>
                     Cliente
                   </Typography>
-                  {customersResponse?.data.find(
-                    (c) => c.id.toString() === formData.customer_id
-                  ) && (
-                    <>
-                      <Typography>
-                        {
-                          customersResponse.data.find(
-                            (c) => c.id.toString() === formData.customer_id
-                          )?.name
-                        }
-                      </Typography>
+                  {selectedCustomer && (
+                    <Box>
+                      <Typography>{selectedCustomer.name}</Typography>
                       <Typography color="text.secondary">
-                        {
-                          customersResponse.data.find(
-                            (c) => c.id.toString() === formData.customer_id
-                          )?.email
-                        }
+                        {selectedCustomer.email}
                       </Typography>
-                    </>
+                    </Box>
                   )}
                 </Paper>
               </Grid>
             </Grid>
           </Box>
         );
+      }
       default:
         return null;
     }
