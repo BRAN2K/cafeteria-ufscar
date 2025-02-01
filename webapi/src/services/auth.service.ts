@@ -13,10 +13,13 @@ export class AuthService {
     email: string,
     password: string
   ): Promise<LoginResult> {
+    console.log("aqui");
     const employee = await db("employees").where({ email }).first();
     if (!employee) {
       throw createError.Unauthorized("Funcionário não encontrado");
     }
+
+    console.log(await bcrypt.hash(employee.password, 10));
 
     const match = await bcrypt.compare(password, employee.password);
     if (!match) {

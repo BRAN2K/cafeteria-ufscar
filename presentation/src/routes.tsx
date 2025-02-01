@@ -10,6 +10,8 @@ import { Products } from "./pages/Products";
 import { ProductForm } from "./pages/Products/ProductForm";
 import { Reservations } from "./pages/Reservations";
 import { ReservationForm } from "./pages/Reservations/ReservationForm";
+import { Customers } from "./pages/Customers";
+import { CustomerForm } from "./pages/Customers/CustomerForm";
 
 export function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -110,6 +112,40 @@ export function AppRoutes() {
           <ProtectedRoute allowedRoles={["admin", "manager", "attendant"]}>
             <MainLayout>
               <ReservationForm />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Rotas protegidas - Clientes */}
+      <Route
+        path="/customers"
+        element={
+          <ProtectedRoute allowedRoles={["admin", "manager"]}>
+            <MainLayout>
+              <Customers />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/customers/new"
+        element={
+          <ProtectedRoute allowedRoles={["admin", "manager"]}>
+            <MainLayout>
+              <CustomerForm />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/customers/:id"
+        element={
+          <ProtectedRoute allowedRoles={["admin", "manager"]}>
+            <MainLayout>
+              <CustomerForm />
             </MainLayout>
           </ProtectedRoute>
         }
