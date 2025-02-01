@@ -7,6 +7,7 @@ import { GlobalStyles } from "./components/Layout/GlobalStyles";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { ptBR } from "date-fns/locale/pt-BR";
+import { EmployeeProvider } from "./contexts/EmployeeContext";
 
 const theme = createTheme({
   palette: {
@@ -30,7 +31,9 @@ function App() {
           <CssBaseline />
           <BrowserRouter>
             <AuthProvider>
-              <AppRoutes />
+              <EmployeeProvider>
+                <AppRoutes />
+              </EmployeeProvider>
             </AuthProvider>
           </BrowserRouter>
         </LocalizationProvider>

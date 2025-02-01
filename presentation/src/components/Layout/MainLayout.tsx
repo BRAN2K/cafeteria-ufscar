@@ -36,6 +36,9 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
 
   const menuItems = [
     { text: "Dashboard", icon: <Dashboard />, path: "/dashboard" },
+    ...(user?.role === "admin"
+      ? [{ text: "Funcionários", icon: <People />, path: "/employees" }]
+      : []),
     { text: "Clientes", icon: <People />, path: "/customers" },
     { text: "Produtos", icon: <Restaurant />, path: "/products" },
     { text: "Reservas", icon: <Event />, path: "/reservations" },

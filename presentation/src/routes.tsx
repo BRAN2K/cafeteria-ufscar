@@ -12,6 +12,8 @@ import { Reservations } from "./pages/Reservations";
 import { ReservationForm } from "./pages/Reservations/ReservationForm";
 import { Customers } from "./pages/Customers";
 import { CustomerForm } from "./pages/Customers/CustomerForm";
+import { Employees } from "./pages/Employees";
+import { EmployeeForm } from "./pages/Employees/EmployeeForm";
 
 export function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -146,6 +148,42 @@ export function AppRoutes() {
           <ProtectedRoute allowedRoles={["admin", "manager"]}>
             <MainLayout>
               <CustomerForm />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Rotas protegidas - Funcionários */}
+      <Route
+        path="/employees"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            {" "}
+            // Apenas admin pode gerenciar funcionários
+            <MainLayout>
+              <Employees />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/employees/new"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <MainLayout>
+              <EmployeeForm />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/employees/:id"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <MainLayout>
+              <EmployeeForm />
             </MainLayout>
           </ProtectedRoute>
         }
