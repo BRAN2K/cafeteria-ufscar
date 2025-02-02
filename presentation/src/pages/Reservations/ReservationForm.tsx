@@ -64,7 +64,7 @@ export function ReservationForm() {
   // Buscar lista de clientes
   const { data: customersResponse, isLoading: loadingCustomers } = useQuery({
     queryKey: ["customers"],
-    queryFn: () => customerService.getAllCustomers(),
+    queryFn: () => customerService.getCustomers(),
   });
 
   // Buscar mesas disponíveis
