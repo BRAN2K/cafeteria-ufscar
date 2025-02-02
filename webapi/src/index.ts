@@ -16,6 +16,7 @@ import reservationRoutes from "./routes/reservation.routes";
 import orderItemRoutes from "./routes/orderItem.routes";
 import authCustomerRoutes from "./routes/authCustomer.routes";
 import authEmployeeRoutes from "./routes/authEmployee.routes";
+import dashboardRoutes from "./routes/dashboard.routes";
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use("/tables", tableRoutes);
 app.use("/products", productRoutes);
 app.use("/reservations", reservationRoutes);
 app.use("/order-items", orderItemRoutes);
+app.use("/dashboard", dashboardRoutes);
 
 app.use(errorHandler);
 
