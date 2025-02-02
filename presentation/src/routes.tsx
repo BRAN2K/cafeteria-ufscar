@@ -14,6 +14,7 @@ import { Customers } from "./pages/Customers";
 import { CustomerForm } from "./pages/Customers/CustomerForm";
 import { Employees } from "./pages/Employees";
 import { EmployeeForm } from "./pages/Employees/EmployeeForm";
+import { Inventory } from "./pages/Inventory";
 
 export function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -184,6 +185,17 @@ export function AppRoutes() {
           <ProtectedRoute allowedRoles={["admin"]}>
             <MainLayout>
               <EmployeeForm />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/inventory"
+        element={
+          <ProtectedRoute allowedRoles={["admin", "manager"]}>
+            <MainLayout>
+              <Inventory />
             </MainLayout>
           </ProtectedRoute>
         }
