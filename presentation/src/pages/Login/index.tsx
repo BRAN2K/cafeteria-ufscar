@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { authService } from "../../services/auth.service";
 import { useAuth } from "../../contexts/AuthContext";
+import { PasswordField } from "../../components/PasswordFields";
 
 export function Login() {
   const [email, setEmail] = useState("");
@@ -77,15 +78,14 @@ export function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <TextField
+            <PasswordField
               margin="normal"
               required
               fullWidth
               label="Senha"
-              type="password"
-              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
             />
             {error && (
               <Typography color="error" sx={{ mt: 1 }}>

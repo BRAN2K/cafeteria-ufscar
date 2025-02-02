@@ -20,6 +20,7 @@ import {
   validatePassword,
   validatePhone,
 } from "../../validations/customer.validations";
+import { PasswordField } from "../../components/PasswordFields";
 
 interface CustomerFormData {
   name: string;
@@ -168,13 +169,14 @@ export function CustomerForm() {
 
             {!id && (
               <Grid item xs={12}>
-                <TextField
+                <PasswordField
+                  margin="normal"
+                  required
                   fullWidth
                   label="Senha"
-                  type="password"
                   value={formData.password}
                   onChange={handleChange("password")}
-                  required
+                  autoComplete="current-password"
                 />
               </Grid>
             )}

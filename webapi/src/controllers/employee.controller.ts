@@ -87,4 +87,20 @@ export class EmployeeController {
       next(error);
     }
   }
+
+  public async updatePassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const { oldPassword, newPassword } = req.body;
+      await employeeService.updatePassword(
+        Number(id),
+        oldPassword,
+        newPassword
+      );
+
+      res.json({ message: "Password updated successfully." });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

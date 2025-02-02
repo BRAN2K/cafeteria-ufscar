@@ -3,11 +3,11 @@ import { CustomerController } from "../controllers/customer.controller";
 import {
   validateCreateCustomer,
   validateUpdateCustomer,
-  validateUpdatePassword,
 } from "../validations/customer.validations";
 import {
   validatePagination,
   validateIdParam,
+  validateUpdatePassword,
 } from "../validations/shared.validations";
 import { checkAuth } from "../middlewares/checkAuth";
 import { checkRole } from "../middlewares/checkRole";

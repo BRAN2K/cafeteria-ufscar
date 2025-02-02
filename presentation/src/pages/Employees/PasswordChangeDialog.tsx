@@ -7,13 +7,13 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  TextField,
   Box,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { employeeService } from "../../services/employee.service";
 import { useToast } from "../../hooks/useToast";
 import { LoadingButton } from "../../components/LoadingButton";
+import { PasswordField } from "../../components/PasswordFields";
 
 interface PasswordChangeDialogProps {
   open: boolean;
@@ -76,22 +76,23 @@ export function PasswordChangeDialog({
         <DialogTitle>Alterar Senha</DialogTitle>
         <DialogContent>
           <Box sx={{ pt: 2, display: "flex", flexDirection: "column", gap: 2 }}>
-            <TextField
+            <PasswordField
+              margin="normal"
+              required
               fullWidth
               label="Senha Atual"
-              type="password"
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
-              required
+              autoComplete="current-password"
             />
-            <TextField
+            <PasswordField
+              margin="normal"
+              required
               fullWidth
               label="Nova Senha"
-              type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              required
-              helperText="Mínimo de 6 caracteres"
+              autoComplete="current-password"
             />
           </Box>
         </DialogContent>

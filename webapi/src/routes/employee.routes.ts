@@ -7,6 +7,7 @@ import {
 import {
   validatePagination,
   validateIdParam,
+  validateUpdatePassword,
 } from "../validations/shared.validations";
 
 // Middlewares de auth
@@ -258,6 +259,62 @@ router.delete(
   checkRole(["admin"]),
   validateIdParam,
   (req, res, next) => employeeController.deleteEmployee(req, res, next)
+);
+
+/**
+ * @openapi
+ * /employees/{id}/password:
+ *   put:
+ *     summary: Atualiza a senha de um funcionário, exigindo a senha antiga
+ *     tags:
+ *       - Employees
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: number
+ *         description: ID do funcionário a ter a senha atualizada
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               oldPassword:
+ *                 type: string
+ *               newPassword:
+ *                 type: string
+ *             required:
+ *               - oldPassword
+ *               - newPassword
+ *             example:
+ *               oldPassword: "oldpass123"
+ *               newPassword: "myNewPass456"
+ *     responses:
+ *       200:
+ *         description: Senha atualizada com sucesso
+ *       400:
+ *         description: Erro de validação
+ *       401:
+ *         description: Falha de autenticação ou oldPassword incorreta
+ *       403:
+ *         description: Role não autorizada ou tentando alterar outro funcionário
+ *       404:
+ *         description: Funcionário não encontrado
+ *       500:
+ *         description: Erro interno do servidor
+ */
+router.put(
+  "/:id/password",
+  checkAuth,
+  checkRole(["admin", "manager"]),
+  validateIdParam,
+  validateUpdatePassword,
+  (req, res, next) => employeeController.updatePassword(req, res, next)
 );
 
 export default router;

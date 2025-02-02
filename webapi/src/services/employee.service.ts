@@ -86,4 +86,34 @@ export class EmployeeService {
       throw createError.NotFound("Employee not found");
     }
   }
+
+  public async updatePassword(
+    id: number,
+    oldPassword: string,
+    newPassword: string
+  ): Promise<void> {
+    const customer = await db("employees").where({ id }).first();
+
+    if (!customer) {
+      throw createError.NotFound("Employee not found");
+    }
+
+    const match = await bcrypt.compare(oldPassword, customer.password);
+    if (!match) {
+      throw createError.Unauthorized("Old password is incorrect.");
+    }
+
+    const saltRounds = 10;
+    const newHash = await bcrypt.hash(newPassword, saltRounds);
+
+    const updatedCount = await db("employees")
+      .where({ id })
+      .update({ password: newHash });
+
+    if (!updatedCount) {
+      throw createError.InternalServerError(
+        "Failed to update password. Please try again."
+      );
+    }
+  }
 }

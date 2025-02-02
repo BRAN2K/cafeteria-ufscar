@@ -48,3 +48,34 @@ export function validateIdParam(
   }
   next();
 }
+
+const updatePasswordSchema = Joi.object({
+  oldPassword: Joi.string().min(6).max(100).required().messages({
+    "string.base": "oldPassword must be a string",
+    "string.min": "oldPassword must have at least {#limit} characters",
+    "string.max": "oldPassword must have at most {#limit} characters",
+    "any.required": "oldPassword is required",
+  }),
+  newPassword: Joi.string().min(6).max(100).required().messages({
+    "string.base": "newPassword must be a string",
+    "string.min": "newPassword must have at least {#limit} characters",
+    "string.max": "newPassword must have at most {#limit} characters",
+    "any.required": "newPassword is required",
+  }),
+});
+
+export function validateUpdatePassword(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const { error } = updatePasswordSchema.validate(req.body, {
+    abortEarly: false,
+  });
+  if (error) {
+    throw createError.BadRequest(
+      error.details.map((d) => d.message).join("; ")
+    );
+  }
+  next();
+}
