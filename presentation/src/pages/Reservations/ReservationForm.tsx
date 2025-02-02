@@ -454,28 +454,10 @@ export function ReservationForm() {
                   <Typography variant="subtitle1" gutterBottom>
                     Mesa Selecionada
                   </Typography>
-                  {availableTables?.find(
-                    (t) => t.id.toString() === formData.table_id
-                  ) && (
-                    <>
-                      <Typography>
-                        Mesa{" "}
-                        {
-                          availableTables.find(
-                            (t) => t.id.toString() === formData.table_id
-                          )?.table_number
-                        }
-                      </Typography>
-                      <Typography color="text.secondary">
-                        {
-                          availableTables.find(
-                            (t) => t.id.toString() === formData.table_id
-                          )?.capacity
-                        }{" "}
-                        lugares
-                      </Typography>
-                    </>
-                  )}
+                  <>
+                    <Typography>Mesa {formData.table_id}</Typography>
+                    <Typography color="text.secondary"></Typography>
+                  </>
                 </Paper>
               </Grid>
 
