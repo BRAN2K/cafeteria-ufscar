@@ -3,7 +3,6 @@ import { CustomerLogin } from "./pages/Login/CustomerLogin";
 import { EmployeeLogin } from "./pages/Login/EmployeeLogin";
 import { Dashboard } from "./pages/Dashboard";
 import { Unauthorized } from "./pages/Unauthorized";
-import { MainLayout } from "./components/Layout/MainLayout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useAuth } from "./contexts/AuthContext";
 import { Products } from "./pages/Products";
@@ -20,6 +19,8 @@ import { TableForm } from "./pages/Tables/TableForm";
 import { Orders } from "./pages/Orders";
 import { OrderDetails } from "./pages/Orders/OrderDetails";
 import { CreateOrder } from "./pages/Orders/OrderForm";
+import { StaffLayout, CustomerLayout } from "./components/Layout";
+import { CustomerReservations } from "./pages/Customer/Reservations";
 
 export function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -41,30 +42,51 @@ export function AppRoutes() {
       {/* Rotas de login */}
       <Route path="/login" element={<CustomerLogin />} />
       <Route path="/admin" element={<EmployeeLogin />} />
-
-      {/* Página de não autorizado */}
       <Route path="/unauthorized" element={<Unauthorized />} />
 
-      {/* Rotas protegidas */}
+      {/* Rotas de Cliente */}
       <Route
-        path="/dashboard"
+        path="/customer/dashboard"
         element={
-          <ProtectedRoute>
-            <MainLayout>
-              <Dashboard />
-            </MainLayout>
+          <ProtectedRoute allowedRoles={["customer"]}>
+            <CustomerLayout>
+              <div></div>
+              {/* <CustomerDashboard /> */}
+            </CustomerLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/customer/reservations"
+        element={
+          <ProtectedRoute allowedRoles={["customer"]}>
+            <CustomerLayout>
+              <CustomerReservations />
+            </CustomerLayout>
           </ProtectedRoute>
         }
       />
 
-      {/* Rotas protegidas - Produtos */}
+      {/* Rotas de Funcionário */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute allowedRoles={["admin", "manager", "attendant"]}>
+            <StaffLayout>
+              <Dashboard />
+            </StaffLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Produtos */}
       <Route
         path="/products"
         element={
           <ProtectedRoute allowedRoles={["admin", "manager"]}>
-            <MainLayout>
+            <StaffLayout>
               <Products />
-            </MainLayout>
+            </StaffLayout>
           </ProtectedRoute>
         }
       />
@@ -73,9 +95,9 @@ export function AppRoutes() {
         path="/products/new"
         element={
           <ProtectedRoute allowedRoles={["admin", "manager"]}>
-            <MainLayout>
+            <StaffLayout>
               <ProductForm />
-            </MainLayout>
+            </StaffLayout>
           </ProtectedRoute>
         }
       />
@@ -84,9 +106,9 @@ export function AppRoutes() {
         path="/products/:id"
         element={
           <ProtectedRoute allowedRoles={["admin", "manager"]}>
-            <MainLayout>
+            <StaffLayout>
               <ProductForm />
-            </MainLayout>
+            </StaffLayout>
           </ProtectedRoute>
         }
       />
@@ -96,9 +118,9 @@ export function AppRoutes() {
         path="/reservations"
         element={
           <ProtectedRoute allowedRoles={["admin", "manager", "attendant"]}>
-            <MainLayout>
+            <StaffLayout>
               <Reservations />
-            </MainLayout>
+            </StaffLayout>
           </ProtectedRoute>
         }
       />
@@ -107,9 +129,9 @@ export function AppRoutes() {
         path="/reservations/new"
         element={
           <ProtectedRoute allowedRoles={["admin", "manager", "attendant"]}>
-            <MainLayout>
+            <StaffLayout>
               <ReservationForm />
-            </MainLayout>
+            </StaffLayout>
           </ProtectedRoute>
         }
       />
@@ -118,9 +140,9 @@ export function AppRoutes() {
         path="/reservations/:id"
         element={
           <ProtectedRoute allowedRoles={["admin", "manager", "attendant"]}>
-            <MainLayout>
+            <StaffLayout>
               <ReservationForm />
-            </MainLayout>
+            </StaffLayout>
           </ProtectedRoute>
         }
       />
@@ -130,9 +152,9 @@ export function AppRoutes() {
         path="/customers"
         element={
           <ProtectedRoute allowedRoles={["admin", "manager"]}>
-            <MainLayout>
+            <StaffLayout>
               <Customers />
-            </MainLayout>
+            </StaffLayout>
           </ProtectedRoute>
         }
       />
@@ -141,9 +163,9 @@ export function AppRoutes() {
         path="/customers/new"
         element={
           <ProtectedRoute allowedRoles={["admin", "manager"]}>
-            <MainLayout>
+            <StaffLayout>
               <CustomerForm />
-            </MainLayout>
+            </StaffLayout>
           </ProtectedRoute>
         }
       />
@@ -152,9 +174,9 @@ export function AppRoutes() {
         path="/customers/:id"
         element={
           <ProtectedRoute allowedRoles={["admin", "manager"]}>
-            <MainLayout>
+            <StaffLayout>
               <CustomerForm />
-            </MainLayout>
+            </StaffLayout>
           </ProtectedRoute>
         }
       />
@@ -164,11 +186,9 @@ export function AppRoutes() {
         path="/employees"
         element={
           <ProtectedRoute allowedRoles={["admin"]}>
-            {" "}
-            // Apenas admin pode gerenciar funcionários
-            <MainLayout>
+            <StaffLayout>
               <Employees />
-            </MainLayout>
+            </StaffLayout>
           </ProtectedRoute>
         }
       />
@@ -177,9 +197,9 @@ export function AppRoutes() {
         path="/employees/new"
         element={
           <ProtectedRoute allowedRoles={["admin"]}>
-            <MainLayout>
+            <StaffLayout>
               <EmployeeForm />
-            </MainLayout>
+            </StaffLayout>
           </ProtectedRoute>
         }
       />
@@ -188,9 +208,9 @@ export function AppRoutes() {
         path="/employees/:id"
         element={
           <ProtectedRoute allowedRoles={["admin"]}>
-            <MainLayout>
+            <StaffLayout>
               <EmployeeForm />
-            </MainLayout>
+            </StaffLayout>
           </ProtectedRoute>
         }
       />
@@ -199,9 +219,9 @@ export function AppRoutes() {
         path="/inventory"
         element={
           <ProtectedRoute allowedRoles={["admin", "manager"]}>
-            <MainLayout>
+            <StaffLayout>
               <Inventory />
-            </MainLayout>
+            </StaffLayout>
           </ProtectedRoute>
         }
       />
@@ -211,9 +231,9 @@ export function AppRoutes() {
         path="/tables"
         element={
           <ProtectedRoute allowedRoles={["admin", "manager"]}>
-            <MainLayout>
+            <StaffLayout>
               <Tables />
-            </MainLayout>
+            </StaffLayout>
           </ProtectedRoute>
         }
       />
@@ -222,9 +242,9 @@ export function AppRoutes() {
         path="/tables/new"
         element={
           <ProtectedRoute allowedRoles={["admin", "manager"]}>
-            <MainLayout>
+            <StaffLayout>
               <TableForm />
-            </MainLayout>
+            </StaffLayout>
           </ProtectedRoute>
         }
       />
@@ -233,9 +253,9 @@ export function AppRoutes() {
         path="/tables/:id"
         element={
           <ProtectedRoute allowedRoles={["admin", "manager"]}>
-            <MainLayout>
+            <StaffLayout>
               <TableForm />
-            </MainLayout>
+            </StaffLayout>
           </ProtectedRoute>
         }
       />
@@ -245,9 +265,9 @@ export function AppRoutes() {
         path="/orders"
         element={
           <ProtectedRoute allowedRoles={["admin", "manager", "attendant"]}>
-            <MainLayout>
+            <StaffLayout>
               <Orders />
-            </MainLayout>
+            </StaffLayout>
           </ProtectedRoute>
         }
       />
@@ -256,9 +276,9 @@ export function AppRoutes() {
         path="/orders/:id"
         element={
           <ProtectedRoute allowedRoles={["admin", "manager", "attendant"]}>
-            <MainLayout>
+            <StaffLayout>
               <OrderDetails />
-            </MainLayout>
+            </StaffLayout>
           </ProtectedRoute>
         }
       />
@@ -267,9 +287,9 @@ export function AppRoutes() {
         path="/orders/new"
         element={
           <ProtectedRoute allowedRoles={["admin", "manager", "attendant"]}>
-            <MainLayout>
+            <StaffLayout>
               <CreateOrder />
-            </MainLayout>
+            </StaffLayout>
           </ProtectedRoute>
         }
       />

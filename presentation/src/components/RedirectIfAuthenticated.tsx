@@ -1,4 +1,4 @@
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 interface RedirectIfAuthenticatedProps {
@@ -8,13 +8,12 @@ interface RedirectIfAuthenticatedProps {
 export function RedirectIfAuthenticated({
   children,
 }: RedirectIfAuthenticatedProps) {
-  const { isAuthenticated } = useAuth();
-  const location = useLocation();
+  const { isAuthenticated, user } = useAuth();
 
-  // Se estiver autenticado, redireciona para a última página ou dashboard
   if (isAuthenticated) {
-    const from = location.state?.from?.pathname || "/dashboard";
-    return <Navigate to={from} replace />;
+    const isCustomer = user?.role === "customer";
+    const defaultPath = isCustomer ? "/customer/reservations" : "/dashboard";
+    return <Navigate to={defaultPath} replace />;
   }
 
   return <>{children}</>;
