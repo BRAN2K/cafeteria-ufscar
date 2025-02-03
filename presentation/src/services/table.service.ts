@@ -1,4 +1,3 @@
-// src/services/table.service.ts
 import api from "./api";
 
 export interface Table {

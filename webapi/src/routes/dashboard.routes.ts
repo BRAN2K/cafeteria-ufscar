@@ -1,4 +1,3 @@
-// src/routes/dashboard.routes.ts
 import { Router } from "express";
 import { DashboardController } from "../controllers/dashboard.controller";
 import { checkAuth } from "../middlewares/checkAuth";

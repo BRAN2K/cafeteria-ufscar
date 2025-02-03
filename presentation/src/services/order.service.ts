@@ -1,4 +1,3 @@
-// src/services/order.service.ts
 import api from "./api";
 import { CreateOrderInput, Order, OrderStatus } from "../types/order";
 

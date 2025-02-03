@@ -1,5 +1,3 @@
-// src/pages/Employees/PasswordChangeDialog.tsx
-
 import { useState } from "react";
 import {
   Dialog,

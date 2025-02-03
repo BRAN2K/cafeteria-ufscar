@@ -1,5 +1,3 @@
-// src/pages/Employees/EmployeeForm.tsx
-
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -192,7 +190,6 @@ export function EmployeeForm() {
 
             <Grid item xs={12}>
               <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
-                // src/pages/Employees/EmployeeForm.tsx (conclusão)
                 <Button
                   variant="outlined"
                   onClick={() => navigate("/employees")}

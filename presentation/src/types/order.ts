@@ -15,7 +15,6 @@ export interface OrderItem {
   };
 }
 
-// src/types/order.ts (ajuste)
 export interface Order {
   id: number;
   table_id: number;

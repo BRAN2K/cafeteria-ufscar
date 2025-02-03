@@ -1,4 +1,3 @@
-// src/pages/Inventory/StockAdjustment.tsx
 import { useState } from "react";
 import {
   Dialog,
@@ -60,8 +59,6 @@ export function StockAdjustment({
       );
     },
   });
-
-  // src/pages/Inventory/StockAdjustment.tsx (continuação)
 
   const handleClose = () => {
     setQuantity("");

@@ -1,4 +1,3 @@
-// src/pages/Dashboard/index.tsx
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { format, parseISO } from "date-fns";

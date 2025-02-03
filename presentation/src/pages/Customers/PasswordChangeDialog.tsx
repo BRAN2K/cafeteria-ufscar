@@ -1,5 +1,3 @@
-// src/pages/Customers/PasswordChangeDialog.tsx
-
 import { useState } from "react";
 import {
   Dialog,
@@ -29,8 +27,6 @@ export function PasswordChangeDialog({
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const { showToast } = useToast();
-
-  // src/pages/Customers/PasswordChangeDialog.tsx (continuação)
 
   const mutation = useMutation({
     mutationFn: async () => {

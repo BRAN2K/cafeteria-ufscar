@@ -1,5 +1,3 @@
-// src/pages/Customers/index.tsx
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -53,8 +51,6 @@ export function Customers() {
   };
 
   const handleChangeRowsPerPage = (
-    // src/pages/Customers/index.tsx (continuação)
-
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -180,8 +176,6 @@ export function Customers() {
       <ConfirmDialog
         open={!!deleteId}
         title="Excluir Cliente"
-        // src/pages/Customers/index.tsx (conclusão)
-
         message="Tem certeza que deseja excluir este cliente? Esta ação não pode ser desfeita."
         onConfirm={handleDelete}
         onCancel={() => setDeleteId(null)}

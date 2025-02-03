@@ -1,4 +1,3 @@
-// src/components/CurrencyFormat.tsx
 interface CurrencyFormatProps {
   value: number;
 }

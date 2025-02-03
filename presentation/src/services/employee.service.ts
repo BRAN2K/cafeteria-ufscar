@@ -1,5 +1,3 @@
-// src/services/employee.service.ts
-
 import api from "./api";
 
 export type EmployeeRole = "admin" | "manager" | "attendant";

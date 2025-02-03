@@ -1,5 +1,3 @@
-// src/services/customer.service.ts
-
 import api from "./api";
 
 export interface Customer {
