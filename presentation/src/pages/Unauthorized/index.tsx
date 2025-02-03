@@ -1,15 +1,8 @@
 import { Box, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
 
 export function Unauthorized() {
   const navigate = useNavigate();
-  const { logout } = useAuth();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
 
   return (
     <Box
@@ -29,8 +22,8 @@ export function Unauthorized() {
       <Typography variant="body1" sx={{ mb: 3 }}>
         Você não tem permissão para acessar esta página.
       </Typography>
-      <Button variant="contained" onClick={handleLogout}>
-        Voltar para o Login
+      <Button variant="contained" onClick={() => navigate(-1)}>
+        Voltar
       </Button>
     </Box>
   );

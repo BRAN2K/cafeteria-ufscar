@@ -98,7 +98,7 @@ router.get(
 router.get(
   "/stats/detailed",
   checkAuth,
-  checkRole(["admin", "manager"]),
+  checkRole(["admin", "manager", "attendant"]),
   (req, res, next) => dashboardController.getDetailedStats(req, res, next)
 );
 
