@@ -25,7 +25,7 @@ export class AuthService {
 
     const token = jwt.sign(
       {
-        sub: employee.id,
+        id: employee.id,
         email: employee.email,
         name: employee.name,
         role: employee.role,
@@ -54,7 +54,7 @@ export class AuthService {
 
     const token = jwt.sign(
       {
-        sub: customer.id,
+        id: customer.id,
         email: customer.email,
         name: customer.name,
         role: "customer",

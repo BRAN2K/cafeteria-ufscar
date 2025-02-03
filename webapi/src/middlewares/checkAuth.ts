@@ -4,7 +4,7 @@ import { JWT_SECRET } from "../config/env";
 import createError from "http-errors";
 
 interface JwtPayload {
-  sub: number;
+  id: number;
   email: string;
   role: string;
   iat: number;
@@ -39,7 +39,7 @@ export function checkAuth(req: Request, res: Response, next: NextFunction) {
 
     // injeta info
     req.user = {
-      id: decoded.sub,
+      id: decoded.id,
       email: decoded.email,
       role: decoded.role,
     };
