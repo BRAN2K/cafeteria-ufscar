@@ -24,6 +24,7 @@ import {
   Event,
   Inventory,
   Logout,
+  TableRestaurant,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
@@ -43,6 +44,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
     { text: "Produtos", icon: <Restaurant />, path: "/products" },
     { text: "Reservas", icon: <Event />, path: "/reservations" },
     { text: "Estoque", icon: <Inventory />, path: "/inventory" },
+    { text: "Mesas", icon: <TableRestaurant />, path: "/tables" },
   ];
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {

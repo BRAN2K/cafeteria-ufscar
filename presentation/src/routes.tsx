@@ -15,6 +15,8 @@ import { CustomerForm } from "./pages/Customers/CustomerForm";
 import { Employees } from "./pages/Employees";
 import { EmployeeForm } from "./pages/Employees/EmployeeForm";
 import { Inventory } from "./pages/Inventory";
+import { Tables } from "./pages/Tables";
+import { TableForm } from "./pages/Tables/TableForm";
 
 export function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -196,6 +198,40 @@ export function AppRoutes() {
           <ProtectedRoute allowedRoles={["admin", "manager"]}>
             <MainLayout>
               <Inventory />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Rotas de Mesas */}
+      <Route
+        path="/tables"
+        element={
+          <ProtectedRoute allowedRoles={["admin", "manager"]}>
+            <MainLayout>
+              <Tables />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/tables/new"
+        element={
+          <ProtectedRoute allowedRoles={["admin", "manager"]}>
+            <MainLayout>
+              <TableForm />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/tables/:id"
+        element={
+          <ProtectedRoute allowedRoles={["admin", "manager"]}>
+            <MainLayout>
+              <TableForm />
             </MainLayout>
           </ProtectedRoute>
         }

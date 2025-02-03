@@ -16,7 +16,7 @@
  *           description: Capacidade de lugares da mesa
  *         status:
  *           type: string
- *           description: Estado da mesa (available, reserved, occupied)
+ *           description: Estado da mesa (available, unavailable)
  *         created_at:
  *           type: string
  *           format: date-time

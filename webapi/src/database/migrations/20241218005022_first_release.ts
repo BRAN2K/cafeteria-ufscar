@@ -24,7 +24,7 @@ export async function up(knex: Knex): Promise<void> {
     table.increments("id").primary();
     table.integer("table_number").notNullable().unique();
     table.integer("capacity").notNullable().defaultTo(4);
-    table.string("status", 50).notNullable().defaultTo("available"); // 'available', 'reserved', 'occupied'
+    table.string("status", 50).notNullable().defaultTo("available"); // 'available', 'unavailable'
     table.datetime("created_at").defaultTo(knex.fn.now());
   });
 

@@ -87,7 +87,7 @@ router.post(
  *         name: search
  *         schema:
  *           type: string
- *         description: Filtro no campo "status" (available, reserved, occupied)
+ *         description: Filtro no campo "status" (available, unavailable)
  *     responses:
  *       200:
  *         description: Lista de mesas paginada
@@ -194,7 +194,7 @@ router.get(
  *             example:
  *               table_number: 2
  *               capacity: 6
- *               status: "reserved"
+ *               status: "unavailable"
  *     responses:
  *       200:
  *         description: Mesa atualizada com sucesso

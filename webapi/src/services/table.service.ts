@@ -5,7 +5,7 @@ export interface Table {
   id?: number;
   table_number: number;
   capacity: number;
-  status: string; // 'available', 'reserved', 'occupied'
+  status: string; // 'available', 'unavailable'
 }
 
 export class TableService {

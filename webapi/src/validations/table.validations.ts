@@ -15,10 +15,10 @@ const createTableSchema = Joi.object({
     "any.required": "capacity is required",
   }),
   status: Joi.string()
-    .valid("available", "reserved", "occupied")
+    .valid("available", "unavailable")
     .default("available")
     .messages({
-      "any.only": "status must be one of: available, reserved, occupied",
+      "any.only": "status must be one of: available, unavailable",
     }),
 });
 
@@ -42,7 +42,7 @@ export function validateCreateTable(
 const updateTableSchema = Joi.object({
   table_number: Joi.number().integer().min(1).optional(),
   capacity: Joi.number().integer().min(1).optional(),
-  status: Joi.string().valid("available", "reserved", "occupied").optional(),
+  status: Joi.string().valid("available", "unavailable").optional(),
 });
 
 export function validateUpdateTable(
