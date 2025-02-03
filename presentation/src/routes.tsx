@@ -17,6 +17,9 @@ import { EmployeeForm } from "./pages/Employees/EmployeeForm";
 import { Inventory } from "./pages/Inventory";
 import { Tables } from "./pages/Tables";
 import { TableForm } from "./pages/Tables/TableForm";
+import { Orders } from "./pages/Orders";
+import { OrderDetails } from "./pages/Orders/OrderDetails";
+import { CreateOrder } from "./pages/Orders/OrderForm";
 
 export function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -232,6 +235,40 @@ export function AppRoutes() {
           <ProtectedRoute allowedRoles={["admin", "manager"]}>
             <MainLayout>
               <TableForm />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Rotas de Pedidos */}
+      <Route
+        path="/orders"
+        element={
+          <ProtectedRoute allowedRoles={["admin", "manager", "attendant"]}>
+            <MainLayout>
+              <Orders />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/orders/:id"
+        element={
+          <ProtectedRoute allowedRoles={["admin", "manager", "attendant"]}>
+            <MainLayout>
+              <OrderDetails />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/orders/new"
+        element={
+          <ProtectedRoute allowedRoles={["admin", "manager", "attendant"]}>
+            <MainLayout>
+              <CreateOrder />
             </MainLayout>
           </ProtectedRoute>
         }
