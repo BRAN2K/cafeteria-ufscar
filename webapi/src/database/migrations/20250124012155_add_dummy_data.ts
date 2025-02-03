@@ -19,6 +19,12 @@ export async function up(knex: Knex): Promise<void> {
       role: "attendant",
       created_at: "2025-01-30 15:05:00",
     },
+    {
+      name: "Admin Moreira",
+      email: "admin@example.com",
+      role: "admin",
+      created_at: "2025-01-30 15:05:00",
+    },
   ]);
 
   await knex("customers").insert([
