@@ -48,17 +48,15 @@ describe("ProductService", () => {
       const limit = 10;
       // Mocks para o método encadeado do Knex
       const countMock = jest.fn().mockResolvedValue([{ total: 15 }]);
-      const offsetMock = jest
-        .fn()
-        .mockResolvedValue([
-          {
-            id: 1,
-            name: "Coffee",
-            price: 5,
-            stock_quantity: 100,
-            description: "Delicious coffee",
-          },
-        ]);
+      const offsetMock = jest.fn().mockResolvedValue([
+        {
+          id: 1,
+          name: "Coffee",
+          price: 5,
+          stock_quantity: 100,
+          description: "Delicious coffee",
+        },
+      ]);
 
       const mockQuery = {
         where: jest.fn().mockReturnThis(),
@@ -101,17 +99,15 @@ describe("ProductService", () => {
       const searchTerm = "Coffee";
 
       const countMock = jest.fn().mockResolvedValue([{ total: 3 }]);
-      const offsetMock = jest
-        .fn()
-        .mockResolvedValue([
-          {
-            id: 2,
-            name: "Coffee Latte",
-            price: 6,
-            stock_quantity: 50,
-            description: "Smooth and creamy",
-          },
-        ]);
+      const offsetMock = jest.fn().mockResolvedValue([
+        {
+          id: 2,
+          name: "Coffee Latte",
+          price: 6,
+          stock_quantity: 50,
+          description: "Smooth and creamy",
+        },
+      ]);
 
       const whereMock = jest.fn().mockReturnThis();
 
@@ -188,9 +184,9 @@ describe("ProductService", () => {
 
       dbMock.mockReturnValue(mockQuery);
 
-      await expect(
-        productService.getProductById(productId)
-      ).rejects.toThrowError(createError.NotFound("Product not found"));
+      await expect(productService.getProductById(productId)).rejects.toThrow(
+        createError.NotFound("Product not found")
+      );
     });
   });
 
@@ -241,7 +237,7 @@ describe("ProductService", () => {
 
       await expect(
         productService.updateProduct(productId, updateData)
-      ).rejects.toThrowError(createError.NotFound("Product not found"));
+      ).rejects.toThrow(createError.NotFound("Product not found"));
     });
   });
 
@@ -276,9 +272,9 @@ describe("ProductService", () => {
 
       dbMock.mockReturnValue(mockQuery);
 
-      await expect(
-        productService.deleteProduct(productId)
-      ).rejects.toThrowError(createError.NotFound("Product not found"));
+      await expect(productService.deleteProduct(productId)).rejects.toThrow(
+        createError.NotFound("Product not found")
+      );
     });
   });
 
@@ -327,9 +323,9 @@ describe("ProductService", () => {
 
       dbMock.mockReturnValue(mockQuery);
 
-      await expect(
-        productService.increaseStock(productId, 5)
-      ).rejects.toThrowError(createError.NotFound("Product not found"));
+      await expect(productService.increaseStock(productId, 5)).rejects.toThrow(
+        createError.NotFound("Product not found")
+      );
     });
   });
 
@@ -385,9 +381,7 @@ describe("ProductService", () => {
 
       await expect(
         productService.decreaseStock(productId, quantity)
-      ).rejects.toThrowError(
-        createError.BadRequest("Not enough stock to decrease")
-      );
+      ).rejects.toThrow(createError.BadRequest("Not enough stock to decrease"));
     });
 
     it("deve lançar NotFound se o produto não existir", async () => {
@@ -400,9 +394,9 @@ describe("ProductService", () => {
 
       dbMock.mockReturnValue(mockQuery);
 
-      await expect(
-        productService.decreaseStock(productId, 5)
-      ).rejects.toThrowError(createError.NotFound("Product not found"));
+      await expect(productService.decreaseStock(productId, 5)).rejects.toThrow(
+        createError.NotFound("Product not found")
+      );
     });
   });
 });

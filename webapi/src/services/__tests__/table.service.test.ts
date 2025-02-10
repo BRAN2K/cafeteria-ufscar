@@ -160,7 +160,7 @@ describe("TableService", () => {
 
       dbMock.mockReturnValue(mockQuery);
 
-      await expect(tableService.getTableById(tableId)).rejects.toThrowError(
+      await expect(tableService.getTableById(tableId)).rejects.toThrow(
         createError.NotFound("Table not found")
       );
     });
@@ -215,7 +215,7 @@ describe("TableService", () => {
 
       await expect(
         tableService.updateTable(tableId, updateData)
-      ).rejects.toThrowError(createError.NotFound("Table not found"));
+      ).rejects.toThrow(createError.NotFound("Table not found"));
     });
   });
 
@@ -248,7 +248,7 @@ describe("TableService", () => {
 
       dbMock.mockReturnValue(mockQuery);
 
-      await expect(tableService.deleteTable(tableId)).rejects.toThrowError(
+      await expect(tableService.deleteTable(tableId)).rejects.toThrow(
         createError.NotFound("Table not found")
       );
     });

@@ -87,7 +87,7 @@ describe("OrderItemService", () => {
 
       await expect(
         orderItemService.createOrderItem(orderId, productId, quantity)
-      ).rejects.toThrowError(createError.NotFound("Order not found"));
+      ).rejects.toThrow(createError.NotFound("Order not found"));
     });
 
     it("deve lançar NotFound se o produto não existir", async () => {
@@ -115,7 +115,7 @@ describe("OrderItemService", () => {
 
       await expect(
         orderItemService.createOrderItem(orderId, productId, quantity)
-      ).rejects.toThrowError(createError.NotFound("Product not found"));
+      ).rejects.toThrow(createError.NotFound("Product not found"));
     });
   });
 
@@ -261,7 +261,7 @@ describe("OrderItemService", () => {
 
       await expect(
         orderItemService.getOrderItemById(orderItemId)
-      ).rejects.toThrowError(createError.NotFound("Order item not found"));
+      ).rejects.toThrow(createError.NotFound("Order item not found"));
     });
   });
 
@@ -296,7 +296,7 @@ describe("OrderItemService", () => {
 
       await expect(
         orderItemService.deleteOrderItem(orderItemId)
-      ).rejects.toThrowError(createError.NotFound("Order item not found"));
+      ).rejects.toThrow(createError.NotFound("Order item not found"));
     });
   });
 });
