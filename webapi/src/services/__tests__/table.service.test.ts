@@ -1,4 +1,3 @@
-// src/services/tableService.test.ts
 import createError from "http-errors";
 import { TableService, Table } from "../table.service";
 import db from "../../database";

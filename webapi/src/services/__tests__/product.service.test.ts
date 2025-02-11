@@ -1,4 +1,3 @@
-// src/services/productService.test.ts
 import createError from "http-errors";
 import { ProductService, Product } from "../product.service";
 import db from "../../database";

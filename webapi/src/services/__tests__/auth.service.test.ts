@@ -1,4 +1,3 @@
-// src/services/authService.test.ts
 import createError from "http-errors";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";

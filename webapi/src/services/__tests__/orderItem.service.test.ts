@@ -1,4 +1,3 @@
-// src/services/orderItemService.test.ts
 import createError from "http-errors";
 import { OrderItemService } from "../orderItem.service";
 import db from "../../database";

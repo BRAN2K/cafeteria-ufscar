@@ -1,4 +1,3 @@
-// src/services/customerService.test.ts
 import createError from "http-errors";
 import bcrypt from "bcrypt";
 import { CustomerService, Customer } from "../customer.service";
