@@ -118,7 +118,7 @@ router.post("/", validateCreateCustomer, (req, res, next) =>
 router.get(
   "/",
   checkAuth,
-  checkRole(["admin"]),
+  checkRole(["admin", "manager", "attendant"]),
   validatePagination,
   (req, res, next) => customerController.getAllCustomers(req, res, next)
 );
@@ -156,7 +156,7 @@ router.get(
 router.get(
   "/:id",
   checkAuth,
-  checkRole(["admin", "customer"]),
+  checkRole(["admin", "manager", "attendant", "customer"]),
   validateIdParam,
   checkCustomerOwnership,
   (req, res, next) => customerController.getCustomerById(req, res, next)
