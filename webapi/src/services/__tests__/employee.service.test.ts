@@ -174,9 +174,9 @@ describe("EmployeeService", () => {
       };
       dbMock.mockReturnValue(query);
 
-      await expect(
-        employeeService.getEmployeeById(employeeId)
-      ).rejects.toThrowError(createError.NotFound("Employee not found"));
+      await expect(employeeService.getEmployeeById(employeeId)).rejects.toThrow(
+        createError.NotFound("Employee not found")
+      );
     });
   });
 
@@ -221,7 +221,7 @@ describe("EmployeeService", () => {
 
       await expect(
         employeeService.updateEmployee(employeeId, updateData)
-      ).rejects.toThrowError(createError.NotFound("Employee not found"));
+      ).rejects.toThrow(createError.NotFound("Employee not found"));
     });
   });
 
@@ -254,9 +254,9 @@ describe("EmployeeService", () => {
 
       dbMock.mockReturnValue(query);
 
-      await expect(
-        employeeService.deleteEmployee(employeeId)
-      ).rejects.toThrowError(createError.NotFound("Employee not found"));
+      await expect(employeeService.deleteEmployee(employeeId)).rejects.toThrow(
+        createError.NotFound("Employee not found")
+      );
     });
   });
 
@@ -313,7 +313,7 @@ describe("EmployeeService", () => {
 
       await expect(
         employeeService.updatePassword(employeeId, "anything", "newPass")
-      ).rejects.toThrowError(createError.NotFound("Employee not found"));
+      ).rejects.toThrow(createError.NotFound("Employee not found"));
     });
 
     it("deve lançar Unauthorized se a senha antiga estiver incorreta", async () => {
@@ -333,9 +333,7 @@ describe("EmployeeService", () => {
 
       await expect(
         employeeService.updatePassword(employeeId, oldPassword, newPassword)
-      ).rejects.toThrowError(
-        createError.Unauthorized("Old password is incorrect.")
-      );
+      ).rejects.toThrow(createError.Unauthorized("Old password is incorrect."));
     });
 
     it("deve lançar InternalServerError se a atualização não afetar nenhuma linha", async () => {
@@ -364,7 +362,7 @@ describe("EmployeeService", () => {
 
       await expect(
         employeeService.updatePassword(employeeId, oldPassword, newPassword)
-      ).rejects.toThrowError(
+      ).rejects.toThrow(
         createError.InternalServerError(
           "Failed to update password. Please try again."
         )
